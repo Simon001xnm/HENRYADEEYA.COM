@@ -36,6 +36,12 @@
       "description": "Venture Visual Two",
       "imageUrl": "/62c93e366a8339b3f001a899543153c3.jpg",
       "imageHint": "strategic planning"
+    },
+    {
+      "id": "yedna-vision",
+      "description": "Yedna Financial Vision",
+      "imageUrl": "/300c56d6f16b0221bb0b7553cb39b09f.jpg",
+      "imageHint": "fintech strategy"
     }
   ]
 }

@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -9,7 +10,7 @@ import { ArrowLeft, Wallet, TrendingUp, ShieldCheck, CheckCircle2 } from 'lucide
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function YednaPage() {
-  const ventureImg = PlaceHolderImages.find(img => img.id === 'venture-img-1');
+  const ventureImg = PlaceHolderImages.find(img => img.id === 'yedna-vision');
   
   return (
     <main className="min-h-screen bg-background">
@@ -35,7 +36,7 @@ export default function YednaPage() {
               {ventureImg?.imageUrl && (
                 <Image 
                   src={ventureImg.imageUrl} 
-                  alt="Yedna Vision" 
+                  alt={ventureImg.description} 
                   fill 
                   className="object-cover"
                   data-ai-hint={ventureImg.imageHint}
