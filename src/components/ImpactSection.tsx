@@ -30,7 +30,7 @@ export function ImpactSection() {
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
         <div className="order-2 md:order-1 relative h-[600px] w-full group">
           <div className="absolute inset-0 border border-primary/20 translate-x-6 translate-y-6 -z-10 group-hover:translate-x-8 group-hover:translate-y-8 transition-transform duration-500" />
-          <div className="relative h-full w-full overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-1000">
+          <div className="relative h-full w-full overflow-hidden">
             <Image 
               src={impactImg?.imageUrl || ''} 
               alt="Ministry Impact" 
@@ -38,7 +38,6 @@ export function ImpactSection() {
               className="object-cover"
               data-ai-hint={impactImg?.imageHint}
             />
-            <div className="absolute inset-0 bg-primary/10 mix-blend-multiply" />
           </div>
         </div>
 

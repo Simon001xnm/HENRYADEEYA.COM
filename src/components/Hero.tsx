@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useEffect, useState } from 'react';
@@ -17,7 +16,6 @@ import Autoplay from "embla-carousel-autoplay";
 export function Hero() {
   const [mounted, setMounted] = useState(false);
   const heroImages = PlaceHolderImages.filter(img => img.id.startsWith('hero-'));
-  const profileImage = PlaceHolderImages.find(img => img.id === 'profile-signature');
 
   useEffect(() => {
     setMounted(true);
@@ -42,10 +40,10 @@ export function Hero() {
           </p>
           
           <div className="flex flex-wrap gap-4 mb-20">
-            <Link href="#ventures" className="bg-primary text-background px-10 py-4 text-[0.75rem] uppercase tracking-widest font-bold hover:bg-primary/90 transition-all hover:-translate-y-1">
+            <Link href="/#ventures" className="bg-primary text-background px-10 py-4 text-[0.75rem] uppercase tracking-widest font-bold hover:bg-primary/90 transition-all hover:-translate-y-1">
               Explore Ventures
             </Link>
-            <Link href="#about" className="border border-foreground/20 text-foreground px-10 py-4 text-[0.75rem] uppercase tracking-widest hover:border-primary hover:text-primary transition-all">
+            <Link href="/#about" className="border border-foreground/20 text-foreground px-10 py-4 text-[0.75rem] uppercase tracking-widest hover:border-primary hover:text-primary transition-all">
               The Mission
             </Link>
           </div>
@@ -77,7 +75,7 @@ export function Hero() {
           <CarouselContent className="h-screen ml-0">
             {heroImages.map((img, index) => (
               <CarouselItem key={index} className="pl-0 h-full relative">
-                <div className="relative w-full h-full grayscale hover:grayscale-0 transition-all duration-1000 overflow-hidden">
+                <div className="relative w-full h-full overflow-hidden">
                   <Image 
                     src={img.imageUrl} 
                     alt={img.description}
@@ -86,7 +84,6 @@ export function Hero() {
                     priority={index === 0}
                     data-ai-hint={img.imageHint}
                   />
-                  <div className="absolute inset-0 bg-background/20" />
                 </div>
               </CarouselItem>
             ))}
