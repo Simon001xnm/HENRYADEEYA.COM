@@ -1,3 +1,4 @@
+
 import { Navigation } from '@/components/Navigation';
 import { Hero } from '@/components/Hero';
 import { AboutSection } from '@/components/AboutSection';
