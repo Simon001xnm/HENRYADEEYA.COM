@@ -1,14 +1,14 @@
+
 "use client"
 
 import React, { useRef, useEffect } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, BarChart2, Briefcase, CheckCircle2 } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ArrowLeft, BookOpen, BarChart2, CheckCircle2 } from 'lucide-react';
 
 export default function IloriePage() {
-  const videoAsset = PlaceHolderImages.find(img => img.id === 'ilorie-video');
+  const videoUrl = "/fffdfdsersrestyuhibj.mp4";
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -36,19 +36,17 @@ export default function IloriePage() {
           </div>
 
           <div className="relative aspect-video w-full overflow-hidden border border-primary/20 shadow-2xl">
-            {videoAsset?.imageUrl && (
-              <video
-                ref={videoRef}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              >
-                <source src={videoAsset.imageUrl} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            )}
+            <video
+              ref={videoRef}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src={videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
 
           <p className="text-2xl text-foreground/60 leading-relaxed font-accent max-w-2xl mx-auto">

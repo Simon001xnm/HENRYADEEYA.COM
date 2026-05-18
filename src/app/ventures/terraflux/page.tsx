@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -5,11 +6,10 @@ import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Zap, Droplets, Leaf, CheckCircle2 } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ArrowLeft, Zap, Droplets, CheckCircle2 } from 'lucide-react';
 
 export default function TerrafluxPage() {
-  const ventureImg = PlaceHolderImages.find(img => img.id === 'venture-img-1');
+  const imageUrl = "/7d58dec63e88a4272e36bde572fae2ea.jpg";
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -32,15 +32,13 @@ export default function TerrafluxPage() {
             </div>
 
             <div className="relative aspect-video w-full overflow-hidden border border-primary/10">
-              {ventureImg?.imageUrl && (
-                <Image 
-                  src={ventureImg.imageUrl} 
-                  alt="Terraflux Engineering Solutions" 
-                  fill 
-                  className="object-cover"
-                  data-ai-hint={ventureImg.imageHint}
-                />
-              )}
+              <Image 
+                src={imageUrl} 
+                alt="Terraflux Engineering Solutions" 
+                fill 
+                className="object-cover"
+                priority
+              />
             </div>
 
             <div className="space-y-6 text-foreground/60 text-lg leading-relaxed">

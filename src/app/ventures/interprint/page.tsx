@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -6,10 +7,9 @@ import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Cpu, Cloud, Globe, CheckCircle2 } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function InterprintPage() {
-  const ventureImg = PlaceHolderImages.find(img => img.id === 'venture-img-2');
+  const imageUrl = "/62c93e366a8339b3f001a899543153c3.jpg";
 
   return (
     <main className="min-h-screen bg-background">
@@ -26,15 +26,13 @@ export default function InterprintPage() {
           </h1>
 
           <div className="relative aspect-video w-full mb-12 overflow-hidden border border-primary/10">
-            {ventureImg?.imageUrl && (
-              <Image 
-                src={ventureImg.imageUrl} 
-                alt="Interprint Digital Infrastructure" 
-                fill 
-                className="object-cover"
-                data-ai-hint={ventureImg.imageHint}
-              />
-            )}
+            <Image 
+              src={imageUrl} 
+              alt="Interprint Digital Infrastructure" 
+              fill 
+              className="object-cover"
+              priority
+            />
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 py-12 border-y border-primary/10 mb-12">
