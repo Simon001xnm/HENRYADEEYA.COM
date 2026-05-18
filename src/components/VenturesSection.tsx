@@ -1,6 +1,8 @@
 "use client"
 
 import React from 'react';
+import { useScrollReveal } from '@/hooks/use-scroll-reveal';
+import { cn } from '@/lib/utils';
 
 const ventures = [
   {
@@ -30,9 +32,17 @@ const ventures = [
 ];
 
 export function VenturesSection() {
+  const { ref, isVisible } = useScrollReveal();
+
   return (
     <section id="ventures" className="py-24 px-6 md:px-20">
-      <div className="max-w-7xl mx-auto">
+      <div 
+        ref={ref}
+        className={cn(
+          "max-w-7xl mx-auto reveal-up",
+          isVisible && "visible"
+        )}
+      >
         <div className="mb-16">
           <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Business Portfolio</span>
           <h2 className="font-headline text-4xl md:text-6xl font-bold text-foreground">

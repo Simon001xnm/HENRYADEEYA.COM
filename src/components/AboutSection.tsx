@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { BarChart3, Rocket, Sprout, Heart } from 'lucide-react';
+import { useScrollReveal } from '@/hooks/use-scroll-reveal';
+import { cn } from '@/lib/utils';
 
 const pillars = [
   {
@@ -27,9 +29,17 @@ const pillars = [
 ];
 
 export function AboutSection() {
+  const { ref, isVisible } = useScrollReveal();
+
   return (
     <section id="about" className="py-24 px-6 md:px-20 bg-secondary/30">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-start">
+      <div 
+        ref={ref}
+        className={cn(
+          "max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-start reveal-up",
+          isVisible && "visible"
+        )}
+      >
         <div className="space-y-8">
           <div>
             <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">About</span>

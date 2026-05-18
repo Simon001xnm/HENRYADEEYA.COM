@@ -1,19 +1,25 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { cn } from '@/lib/utils';
 
 export function Hero() {
+  const [mounted, setMounted] = useState(false);
   const heroProfile = PlaceHolderImages.find(img => img.id === 'hero-profile');
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <section id="hero" className="relative min-h-screen flex flex-col md:flex-row overflow-hidden">
       {/* Left Content */}
       <div className="flex-1 flex flex-col justify-center px-6 md:px-20 pt-32 pb-20 z-10">
-        <div className="reveal-up visible">
+        <div className={cn("reveal-up", mounted && "visible")}>
           <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-6 block">
             Economist · Entrepreneur · Servant Leader
           </span>
@@ -66,7 +72,10 @@ export function Hero() {
         </div>
 
         {/* Floating Stats */}
-        <div className="absolute bottom-12 right-12 z-20 flex gap-12 bg-background/80 backdrop-blur-xl border border-primary/10 p-10 reveal-up visible stagger-3">
+        <div className={cn(
+          "absolute bottom-12 right-12 z-20 flex gap-12 bg-background/80 backdrop-blur-xl border border-primary/10 p-10 reveal-up stagger-3",
+          mounted && "visible"
+        )}>
           <div className="text-center">
             <span className="block font-headline text-3xl font-bold text-primary">4+</span>
             <span className="text-[0.6rem] uppercase tracking-widest text-foreground/40">Ventures</span>
