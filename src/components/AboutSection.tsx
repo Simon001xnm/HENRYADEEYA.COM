@@ -33,7 +33,7 @@ const pillars = [
 
 export function AboutSection() {
   const { ref, isVisible } = useScrollReveal();
-  const signatureImage = PlaceHolderImages.find(img => img.id === 'profile-signature');
+  const mainImage = PlaceHolderImages.find(img => img.id === 'man-of-purpose');
 
   return (
     <section id="about" className="py-24 px-6 md:px-20 bg-secondary/30">
@@ -55,25 +55,23 @@ export function AboutSection() {
           
           <div className="space-y-6 text-foreground/60 text-lg leading-relaxed">
             <p>
-              Henry Adeeya is a <strong className="text-foreground">Nairobi-based entrepreneur, leader, and servant</strong> with a deeply held conviction that business, leadership, and faith are not separate callings — they are one integrated purpose.
+              Henry Adeeya is a <strong className="text-foreground">Nairobi-based entrepreneur, leader, and servant</strong> with a deeply held conviction that business, leadership, and faith are not separate callings.
             </p>
             <div className="relative w-full aspect-[4/5] my-8 overflow-hidden border border-primary/20 shadow-2xl">
-              {signatureImage && (
+              {mainImage && (
                 <Image 
-                  src={signatureImage.imageUrl}
-                  alt={signatureImage.description}
+                  src={mainImage.imageUrl}
+                  alt={mainImage.description}
                   fill
-                  className="object-cover object-top"
+                  className="object-cover"
                   quality={100}
-                  data-ai-hint={signatureImage.imageHint}
+                  priority
+                  data-ai-hint={mainImage.imageHint}
                 />
               )}
             </div>
             <p>
-              He has built a portfolio of ventures spanning fintech, engineering, IT solutions, and financial consultancy — driven by a belief that <strong className="text-primary">enterprise is most powerful when it uplifts communities</strong> and creates lasting change.
-            </p>
-            <p>
-              Whether in a boardroom, a training room, or a sanctuary, Henry brings the same energy: clarity of vision, depth of character, and a genuine heart for people.
+              He has built a portfolio of ventures spanning fintech, engineering, IT solutions, and financial consultancy — driven by a belief that <strong className="text-primary">enterprise is most powerful when it uplifts communities</strong>.
             </p>
           </div>
         </div>

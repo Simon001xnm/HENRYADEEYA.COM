@@ -1,12 +1,17 @@
+
 "use client"
 
 import React from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Zap, Droplets, Leaf, CheckCircle2 } from 'lucide-react';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function TerrafluxPage() {
+  const ventureImg = PlaceHolderImages.find(img => img.id === 'venture-img-1');
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <Navigation />
@@ -27,21 +32,20 @@ export default function TerrafluxPage() {
               </p>
             </div>
 
-            <div className="space-y-6 text-foreground/60 text-lg leading-relaxed">
-              <p>
-                Terraflux Solutions was founded on the belief that Africa's infrastructure must be built with the future in mind. We provide high-end engineering services focused on renewable energy and water management systems.
-              </p>
+            <div className="relative aspect-video w-full overflow-hidden border border-primary/10">
+              <Image 
+                src={ventureImg?.imageUrl || ''} 
+                alt="Terraflux Engineering Solutions" 
+                fill 
+                className="object-cover"
+                data-ai-hint={ventureImg?.imageHint}
+              />
             </div>
 
-            <div className="flex gap-12 pt-8">
-              <div className="text-center">
-                <span className="block font-headline text-4xl font-bold text-primary">15+</span>
-                <span className="text-[0.6rem] uppercase tracking-widest text-foreground/40">Projects</span>
-              </div>
-              <div className="text-center border-x border-primary/10 px-12">
-                <span className="block font-headline text-4xl font-bold text-primary">3</span>
-                <span className="text-[0.6rem] uppercase tracking-widest text-foreground/40">Countries</span>
-              </div>
+            <div className="space-y-6 text-foreground/60 text-lg leading-relaxed">
+              <p>
+                Terraflux Solutions provides high-end engineering services focused on renewable energy and water management systems.
+              </p>
             </div>
           </div>
 
@@ -54,14 +58,9 @@ export default function TerrafluxPage() {
               <Droplets className="text-primary" size={40} />
               <h3 className="font-headline text-xl">Water</h3>
             </div>
-            <div className="bg-primary/10 p-12 border border-primary/20 flex flex-col items-center justify-center text-center gap-4 col-span-2">
-              <Leaf className="text-primary" size={40} />
-              <h3 className="font-headline text-xl">Sustainability First</h3>
-            </div>
           </div>
         </div>
 
-        {/* Balanced Case Section */}
         <section className="bg-accent/5 p-12 md:p-20 border border-accent/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
@@ -72,15 +71,15 @@ export default function TerrafluxPage() {
             <div className="space-y-8 text-foreground/60 leading-relaxed">
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Challenge:</strong> Smallholder farmers in semi-arid regions of Kenya were limited to one crop cycle per year due to unpredictable rainfall.</p>
+                <p><strong>The Challenge:</strong> Smallholder farmers in semi-arid regions were limited to one crop cycle per year.</p>
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Solution:</strong> Terraflux engineered a localized solar-powered irrigation network with smart-metering for water conservation.</p>
+                <p><strong>The Solution:</strong> Terraflux engineered a localized solar-powered irrigation network.</p>
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Outcome:</strong> Farmers transitioned to three cycles annually, effectively tripling food security and economic stability for over 500 households.</p>
+                <p><strong>The Outcome:</strong> Farmers transitioned to three cycles annually, tripling food security for 500 households.</p>
               </div>
             </div>
           </div>

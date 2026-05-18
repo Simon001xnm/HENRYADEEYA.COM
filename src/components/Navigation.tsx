@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect } from 'react';
@@ -24,7 +25,6 @@ export function Navigation() {
     { label: 'About', href: '/#about' },
     { label: 'Ventures', href: '/#ventures' },
     { label: 'Impact', href: '/#impact' },
-    { label: 'AI Tools', href: '/#ai-tools' },
     { label: 'Contact', href: '/#contact' },
   ];
 

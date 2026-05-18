@@ -1,12 +1,17 @@
+
 "use client"
 
 import React from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Cpu, Cloud, Globe, CheckCircle2 } from 'lucide-react';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function InterprintPage() {
+  const ventureImg = PlaceHolderImages.find(img => img.id === 'venture-img-2');
+
   return (
     <main className="min-h-screen bg-background">
       <Navigation />
@@ -20,6 +25,16 @@ export default function InterprintPage() {
           <h1 className="font-headline text-5xl md:text-8xl font-black text-foreground mb-8">
             Interprint <br /><span className="italic text-primary">Digital Systems</span>
           </h1>
+
+          <div className="relative aspect-video w-full mb-12 overflow-hidden border border-primary/10">
+            <Image 
+              src={ventureImg?.imageUrl || ''} 
+              alt="Interprint Digital Infrastructure" 
+              fill 
+              className="object-cover"
+              data-ai-hint={ventureImg?.imageHint}
+            />
+          </div>
           
           <div className="grid md:grid-cols-3 gap-8 py-12 border-y border-primary/10 mb-12">
             <div className="space-y-4">
@@ -30,7 +45,7 @@ export default function InterprintPage() {
             <div className="space-y-4">
               <Cloud className="text-primary" size={24} />
               <h3 className="font-headline text-xl">System Integration</h3>
-              <p className="text-sm text-foreground/40 leading-relaxed">Connecting fragmented workflows into a single, cohesive digital ecosystem.</p>
+              <p className="text-sm text-foreground/40 leading-relaxed">Connecting fragmented workflows into a single cohesive digital ecosystem.</p>
             </div>
             <div className="space-y-4">
               <Globe className="text-primary" size={24} />
@@ -41,12 +56,11 @@ export default function InterprintPage() {
 
           <div className="space-y-8 text-foreground/60 text-lg leading-relaxed">
             <p>
-              In an era of rapid digital evolution, Interprint stands as a beacon of reliability for Nairobi's growing tech hub. We specialize in taking legacy operations and infusing them with modern IT capabilities.
+              In an era of rapid digital evolution, Interprint stands as a beacon of reliability for Nairobi's growing tech hub.
             </p>
           </div>
         </div>
 
-        {/* Balanced Case Section */}
         <section className="bg-primary/5 p-12 md:p-20 border border-primary/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
@@ -61,11 +75,11 @@ export default function InterprintPage() {
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Solution:</strong> Interprint designed and deployed a custom cloud ERP integrated with real-time IoT sensors for warehouse management.</p>
+                <p><strong>The Solution:</strong> Interprint designed and deployed a custom cloud ERP integrated with real-time IoT sensors.</p>
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Outcome:</strong> Inventory loss dropped to near zero within 6 months, saving the client millions in annual operational overhead.</p>
+                <p><strong>The Outcome:</strong> Inventory loss dropped to near zero within 6 months, saving millions in operational overhead.</p>
               </div>
             </div>
           </div>

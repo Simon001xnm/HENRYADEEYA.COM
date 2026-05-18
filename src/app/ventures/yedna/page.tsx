@@ -1,12 +1,17 @@
+
 "use client"
 
 import React from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Wallet, TrendingUp, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function YednaPage() {
+  const ventureImg = PlaceHolderImages.find(img => img.id === 'venture-img-1');
+  
   return (
     <main className="min-h-screen bg-background">
       <Navigation />
@@ -27,10 +32,14 @@ export default function YednaPage() {
               </p>
             </div>
 
-            <div className="space-y-6 text-foreground/50 text-lg leading-relaxed">
-              <p>
-                Yedna represents the pinnacle of Henry Adeeya's vision for the Kenyan fintech landscape. Born from a need to bridge the gap between traditional banking and the unbanked populations, Yedna provides secure, accessible, and intuitive financial tools.
-              </p>
+            <div className="relative aspect-video overflow-hidden border border-primary/10">
+              <Image 
+                src={ventureImg?.imageUrl || ''} 
+                alt="Yedna Vision" 
+                fill 
+                className="object-cover"
+                data-ai-hint={ventureImg?.imageHint}
+              />
             </div>
 
             <div className="grid sm:grid-cols-2 gap-8 pt-8">
@@ -61,15 +70,6 @@ export default function YednaPage() {
                     <p className="text-sm text-foreground/50">Full transparency in every transaction and fee structure.</p>
                   </div>
                 </li>
-                <li className="flex gap-6">
-                  <div className="w-12 h-12 flex-shrink-0 bg-primary/10 flex items-center justify-center text-primary">
-                    <TrendingUp size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-foreground mb-1 uppercase tracking-widest text-[0.7rem]">Sustainable Scale</h4>
-                    <p className="text-sm text-foreground/50">Growth models designed to withstand market volatility.</p>
-                  </div>
-                </li>
               </ul>
               
               <div className="pt-12 border-t border-primary/10">
@@ -83,7 +83,6 @@ export default function YednaPage() {
           </div>
         </div>
 
-        {/* Balanced Case Section */}
         <section className="bg-secondary/20 p-12 md:p-20 border border-primary/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
@@ -98,11 +97,11 @@ export default function YednaPage() {
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Solution:</strong> Yedna implemented a peer-trust credit system that evaluated risk based on community standing and transaction history rather than collateral.</p>
+                <p><strong>The Solution:</strong> Yedna implemented a peer-trust credit system that evaluated risk based on community standing and transaction history.</p>
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Outcome:</strong> Over 1,200 artisans secured funding within the first year, resulting in a 40% average increase in household income for participants.</p>
+                <p><strong>The Outcome:</strong> Over 1,200 artisans secured funding within the first year, resulting in a 40% average increase in household income.</p>
               </div>
             </div>
           </div>

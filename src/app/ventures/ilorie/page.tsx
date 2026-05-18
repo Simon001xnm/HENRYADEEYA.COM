@@ -1,12 +1,25 @@
+
 "use client"
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import { ArrowLeft, BookOpen, BarChart2, Briefcase, CheckCircle2 } from 'lucide-react';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function IloriePage() {
+  const videoAsset = PlaceHolderImages.find(img => img.id === 'ilorie-video');
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Handle potential autoplay restrictions
+      });
+    }
+  }, []);
+
   return (
     <main className="min-h-screen bg-background">
       <Navigation />
@@ -23,6 +36,20 @@ export default function IloriePage() {
             </h1>
           </div>
 
+          <div className="relative aspect-video w-full overflow-hidden border border-primary/20 shadow-2xl">
+            <video
+              ref={videoRef}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src={videoAsset?.imageUrl || ''} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
           <p className="text-2xl text-foreground/60 leading-relaxed font-accent max-w-2xl mx-auto">
             Providing intellectual capital for complex financial navigation and strategic compliance.
           </p>
@@ -33,30 +60,18 @@ export default function IloriePage() {
                 <BookOpen size={24} />
               </div>
               <h3 className="font-headline text-2xl">Tax Advisory</h3>
-              <p className="text-sm text-foreground/40 leading-relaxed">Navigating local and international tax laws with precision and ethical foresight.</p>
+              <p className="text-sm text-foreground/40 leading-relaxed">Navigating tax laws with precision and ethical foresight.</p>
             </div>
             <div className="bg-card p-12 text-left space-y-6">
               <div className="w-12 h-12 bg-primary/10 flex items-center justify-center text-primary">
                 <BarChart2 size={24} />
               </div>
               <h3 className="font-headline text-2xl">Financial Research</h3>
-              <p className="text-sm text-foreground/40 leading-relaxed">Data-driven insights for organizational growth and market entry strategies.</p>
-            </div>
-            <div className="bg-card p-12 text-left space-y-6">
-              <div className="w-12 h-12 bg-primary/10 flex items-center justify-center text-primary">
-                <Briefcase size={24} />
-              </div>
-              <h3 className="font-headline text-2xl">Audit Support</h3>
-              <p className="text-sm text-foreground/40 leading-relaxed">Ensuring governance and compliance at every level of corporate structure.</p>
-            </div>
-            <div className="bg-primary text-background p-12 text-left space-y-6">
-              <h3 className="font-headline text-2xl italic">"Excellence in every detail."</h3>
-              <p className="text-sm text-background/80">Henry Adeeya leads Ilorie with a focus on servant-leadership consultancy — where the client's mission becomes our own.</p>
+              <p className="text-sm text-foreground/40 leading-relaxed">Data-driven insights for organizational growth.</p>
             </div>
           </div>
         </div>
 
-        {/* Balanced Case Section */}
         <section className="bg-secondary/20 p-12 md:p-20 border border-primary/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
@@ -67,15 +82,15 @@ export default function IloriePage() {
             <div className="space-y-8 text-foreground/60 leading-relaxed">
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Challenge:</strong> A mid-sized regional bank faced compliance hurdles that threatened its expansion into new East African territories.</p>
+                <p><strong>The Challenge:</strong> A mid-sized regional bank faced compliance hurdles threatening its expansion.</p>
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Solution:</strong> Ilorie performed a deep-dive audit and restructured their internal financial controls to meet international standards.</p>
+                <p><strong>The Solution:</strong> Ilorie performed a deep-dive audit and restructured their internal financial controls.</p>
               </div>
               <div className="flex gap-4">
                 <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
-                <p><strong>The Outcome:</strong> The bank successfully cleared all regulatory hurdles and launched operations in three new countries within 18 months.</p>
+                <p><strong>The Outcome:</strong> The bank cleared regulatory hurdles and launched operations in three new countries.</p>
               </div>
             </div>
           </div>

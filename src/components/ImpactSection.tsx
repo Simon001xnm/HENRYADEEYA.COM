@@ -24,7 +24,7 @@ const impactPoints = [
 ];
 
 export function ImpactSection() {
-  const impactImg = PlaceHolderImages.find(img => img.id === 'ministry-impact');
+  const impactImg = PlaceHolderImages.find(img => img.id === 'grounded-impact');
 
   return (
     <section id="impact" className="py-24 px-6 md:px-20 bg-background overflow-hidden">
@@ -34,7 +34,7 @@ export function ImpactSection() {
           <div className="relative h-full w-full overflow-hidden">
             <Image 
               src={impactImg?.imageUrl || ''} 
-              alt="Ministry Impact" 
+              alt="Grounded In Purpose Impact" 
               fill 
               className="object-cover"
               quality={100}

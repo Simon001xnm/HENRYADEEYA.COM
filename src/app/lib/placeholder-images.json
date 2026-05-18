@@ -2,34 +2,40 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-1",
-      "description": "Henry Adeeya Professional Vision",
-      "imageUrl": "https://picsum.photos/seed/adeeya1/1920/1080",
+      "id": "hero-video",
+      "description": "Hero Cinematic Background",
+      "imageUrl": "/fghjkjhgf.mp4",
+      "imageHint": "cinematic video"
+    },
+    {
+      "id": "man-of-purpose",
+      "description": "Henry Adeeya - A Man of Purpose",
+      "imageUrl": "/7d58dec63e88a4272e36bde572fae2ea.jpg",
       "imageHint": "professional man"
     },
     {
-      "id": "hero-2",
-      "description": "Henry Adeeya Leadership Excellence",
-      "imageUrl": "https://picsum.photos/seed/adeeya2/1920/1080",
-      "imageHint": "business leader"
+      "id": "grounded-impact",
+      "description": "Henry Adeeya - Grounded In Purpose",
+      "imageUrl": "/62c93e366a8339b3f001a899543153c3.jpg",
+      "imageHint": "leadership impact"
     },
     {
-      "id": "hero-3",
-      "description": "Henry Adeeya Strategic Impact",
-      "imageUrl": "https://picsum.photos/seed/adeeya3/1920/1080",
-      "imageHint": "mentor"
+      "id": "ilorie-video",
+      "description": "Ilorie Consultancy Vision",
+      "imageUrl": "/fffdfdsersrestyuhibj.mp4",
+      "imageHint": "business video"
     },
     {
-      "id": "ministry-impact",
-      "description": "Henry Adeeya engaging with community",
-      "imageUrl": "https://picsum.photos/seed/adeeya4/1200/800",
-      "imageHint": "community engagement"
+      "id": "venture-img-1",
+      "description": "Venture Visual One",
+      "imageUrl": "/7d58dec63e88a4272e36bde572fae2ea.jpg",
+      "imageHint": "business growth"
     },
     {
-      "id": "profile-signature",
-      "description": "Henry Adeeya Signature Portrait",
-      "imageUrl": "https://picsum.photos/seed/adeeyasig8k/800/1000",
-      "imageHint": "portrait"
+      "id": "venture-img-2",
+      "description": "Venture Visual Two",
+      "imageUrl": "/62c93e366a8339b3f001a899543153c3.jpg",
+      "imageHint": "strategic planning"
     }
   ]
 }
