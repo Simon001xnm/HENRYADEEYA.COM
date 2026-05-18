@@ -2,21 +2,12 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 
 export function Hero() {
   const [mounted, setMounted] = useState(false);
-  const heroImages = PlaceHolderImages.filter(img => img.id.startsWith('hero-'));
 
   useEffect(() => {
     setMounted(true);
@@ -56,45 +47,27 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Right Visuals - Slide Motion */}
+      {/* Right Visuals - Continuous Cinematic Video */}
       <div className="hidden md:flex flex-1 relative">
         <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent z-10" />
         <div className="absolute left-0 top-1/4 bottom-1/4 w-[1px] bg-gradient-to-b from-transparent via-primary to-transparent z-10" />
         
-        <Carousel 
-          className="w-full h-full"
-          plugins={[
-            Autoplay({
-              delay: 4000,
-            }),
-          ]}
-          opts={{
-            loop: true,
-            duration: 60,
-          }}
-        >
-          <CarouselContent className="h-screen ml-0">
-            {heroImages.map((img, index) => (
-              <CarouselItem key={index} className="pl-0 h-full relative">
-                <div className="relative w-full h-full overflow-hidden">
-                  <Image 
-                    src={img.imageUrl} 
-                    alt={img.description}
-                    fill
-                    className="object-cover object-center"
-                    priority={index === 0}
-                    quality={100}
-                    data-ai-hint={img.imageHint}
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/fghjkjhgf.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
 
         {/* Initials Overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] select-none pointer-events-none z-0">
-          <span className="font-headline text-[25vw] font-black tracking-tighter">HA</span>
+          <span className="font-headline text-[25vw] font-black tracking-tighter text-foreground">HA</span>
         </div>
 
         {/* Floating Stats */}
