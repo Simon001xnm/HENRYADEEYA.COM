@@ -1,0 +1,93 @@
+"use client"
+
+import React from 'react';
+import { Navigation } from '@/components/Navigation';
+import { Footer } from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { ArrowLeft, Wallet, TrendingUp, ShieldCheck } from 'lucide-react';
+
+export default function YednaPage() {
+  return (
+    <main className="min-h-screen bg-background">
+      <Navigation />
+      <div className="pt-32 pb-24 px-6 md:px-20 max-w-7xl mx-auto">
+        <Link href="/#ventures" className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-primary hover:text-foreground transition-colors mb-12">
+          <ArrowLeft size={14} /> Back to Portfolio
+        </Link>
+
+        <div className="grid md:grid-cols-2 gap-20">
+          <div className="space-y-8">
+            <div>
+              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Venture 01 · Fintech</span>
+              <h1 className="font-headline text-5xl md:text-7xl font-black text-foreground mb-6">
+                Yedna <br /><span className="italic text-primary">Financial</span>
+              </h1>
+              <p className="text-xl text-foreground/60 leading-relaxed italic">
+                "Democratizing wealth creation through technological transparency and ethical finance."
+              </p>
+            </div>
+
+            <div className="space-y-6 text-foreground/50 text-lg leading-relaxed">
+              <p>
+                Yedna represents the pinnacle of Henry Adeeya's vision for the Kenyan fintech landscape. Born from a need to bridge the gap between traditional banking and the unbanked populations, Yedna provides secure, accessible, and intuitive financial tools.
+              </p>
+              <p>
+                Our mission is to empower small-scale entrepreneurs and individuals with the capital management tools they need to thrive in a globalized economy.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-8 pt-8">
+              <div className="p-8 border border-primary/10 bg-card">
+                <Wallet className="text-primary mb-4" size={32} />
+                <h3 className="font-headline text-xl mb-2">Micro-Capital</h3>
+                <p className="text-sm text-foreground/40">Providing essential funding for grassroots innovation.</p>
+              </div>
+              <div className="p-8 border border-primary/10 bg-card">
+                <TrendingUp className="text-primary mb-4" size={32} />
+                <h3 className="font-headline text-xl mb-2">Wealth Growth</h3>
+                <p className="text-sm text-foreground/40">Tailored investment strategies for long-term security.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/5 -skew-y-3 z-0" />
+            <div className="relative z-10 p-12 border border-primary/20 bg-background/50 backdrop-blur-xl space-y-12">
+              <h2 className="font-headline text-3xl">Strategic Pillars</h2>
+              <ul className="space-y-8">
+                <li className="flex gap-6">
+                  <div className="w-12 h-12 flex-shrink-0 bg-primary/10 flex items-center justify-center text-primary">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-foreground mb-1 uppercase tracking-widest text-[0.7rem]">Absolute Integrity</h4>
+                    <p className="text-sm text-foreground/50">Full transparency in every transaction and fee structure.</p>
+                  </div>
+                </li>
+                <li className="flex gap-6">
+                  <div className="w-12 h-12 flex-shrink-0 bg-primary/10 flex items-center justify-center text-primary">
+                    <TrendingUp size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-foreground mb-1 uppercase tracking-widest text-[0.7rem]">Sustainable Scale</h4>
+                    <p className="text-sm text-foreground/50">Growth models designed to withstand market volatility.</p>
+                  </div>
+                </li>
+              </ul>
+              
+              <div className="pt-12 border-t border-primary/10">
+                <p className="text-[0.6rem] uppercase tracking-[0.3em] text-primary mb-4">Venture Status</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-sm font-medium">Currently Scaling across East Africa</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </main>
+  );
+}
