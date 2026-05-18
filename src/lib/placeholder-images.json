@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-profile",
+      "description": "Professional profile shot of Henry Adeeya in a high-end office setting",
+      "imageUrl": "https://picsum.photos/seed/adeeya1/800/1200",
+      "imageHint": "professional man"
+    },
+    {
+      "id": "ministry-impact",
+      "description": "Henry Adeeya engaging with youth at RJM Church Kikuyu",
+      "imageUrl": "https://picsum.photos/seed/adeeya2/1000/600",
+      "imageHint": "community service"
+    },
+    {
+      "id": "venture-nexus",
+      "description": "Abstract technological grid representing fintech and energy synergy",
+      "imageUrl": "https://picsum.photos/seed/adeeya3/1200/800",
+      "imageHint": "technology energy"
+    }
+  ]
 }
