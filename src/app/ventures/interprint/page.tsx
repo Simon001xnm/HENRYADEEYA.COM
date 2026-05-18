@@ -4,7 +4,7 @@ import React from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
-import { ArrowLeft, Cpu, Cloud, Globe } from 'lucide-react';
+import { ArrowLeft, Cpu, Cloud, Globe, CheckCircle2 } from 'lucide-react';
 
 export default function InterprintPage() {
   return (
@@ -15,7 +15,7 @@ export default function InterprintPage() {
           <ArrowLeft size={14} /> Back to Portfolio
         </Link>
 
-        <div className="max-w-4xl">
+        <div className="max-w-4xl mb-24">
           <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Venture 02 · IT Solutions</span>
           <h1 className="font-headline text-5xl md:text-8xl font-black text-foreground mb-8">
             Interprint <br /><span className="italic text-primary">Digital Systems</span>
@@ -43,11 +43,33 @@ export default function InterprintPage() {
             <p>
               In an era of rapid digital evolution, Interprint stands as a beacon of reliability for Nairobi's growing tech hub. We specialize in taking legacy operations and infusing them with modern IT capabilities.
             </p>
-            <p>
-              Our approach is not just about installing software; it's about understanding the human workflow and designing systems that serve the people using them.
-            </p>
           </div>
         </div>
+
+        {/* Balanced Case Section */}
+        <section className="bg-primary/5 p-12 md:p-20 border border-primary/10">
+          <div className="max-w-3xl mx-auto space-y-12">
+            <div className="text-center">
+              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Balanced Case Study</span>
+              <h2 className="font-headline text-4xl md:text-5xl font-bold">Optimizing <span className="italic text-primary">Supply Chains</span></h2>
+            </div>
+            
+            <div className="space-y-8 text-foreground/60 leading-relaxed">
+              <div className="flex gap-4">
+                <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
+                <p><strong>The Challenge:</strong> A regional manufacturing firm was losing 15% of inventory due to fragmented manual tracking systems.</p>
+              </div>
+              <div className="flex gap-4">
+                <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
+                <p><strong>The Solution:</strong> Interprint designed and deployed a custom cloud ERP integrated with real-time IoT sensors for warehouse management.</p>
+              </div>
+              <div className="flex gap-4">
+                <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
+                <p><strong>The Outcome:</strong> Inventory loss dropped to near zero within 6 months, saving the client millions in annual operational overhead.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
       <Footer />
     </main>

@@ -3,9 +3,8 @@
 import React from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, Wallet, TrendingUp, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Wallet, TrendingUp, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export default function YednaPage() {
   return (
@@ -16,7 +15,7 @@ export default function YednaPage() {
           <ArrowLeft size={14} /> Back to Portfolio
         </Link>
 
-        <div className="grid md:grid-cols-2 gap-20">
+        <div className="grid md:grid-cols-2 gap-20 mb-24">
           <div className="space-y-8">
             <div>
               <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Venture 01 · Fintech</span>
@@ -31,9 +30,6 @@ export default function YednaPage() {
             <div className="space-y-6 text-foreground/50 text-lg leading-relaxed">
               <p>
                 Yedna represents the pinnacle of Henry Adeeya's vision for the Kenyan fintech landscape. Born from a need to bridge the gap between traditional banking and the unbanked populations, Yedna provides secure, accessible, and intuitive financial tools.
-              </p>
-              <p>
-                Our mission is to empower small-scale entrepreneurs and individuals with the capital management tools they need to thrive in a globalized economy.
               </p>
             </div>
 
@@ -53,7 +49,7 @@ export default function YednaPage() {
 
           <div className="relative">
             <div className="absolute inset-0 bg-primary/5 -skew-y-3 z-0" />
-            <div className="relative z-10 p-12 border border-primary/20 bg-background/50 backdrop-blur-xl space-y-12">
+            <div className="relative z-10 p-12 border border-primary/20 bg-background/50 backdrop-blur-xl space-y-12 h-full">
               <h2 className="font-headline text-3xl">Strategic Pillars</h2>
               <ul className="space-y-8">
                 <li className="flex gap-6">
@@ -86,6 +82,31 @@ export default function YednaPage() {
             </div>
           </div>
         </div>
+
+        {/* Balanced Case Section */}
+        <section className="bg-secondary/20 p-12 md:p-20 border border-primary/10">
+          <div className="max-w-3xl mx-auto space-y-12">
+            <div className="text-center">
+              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Balanced Case Study</span>
+              <h2 className="font-headline text-4xl md:text-5xl font-bold">Bridging the <span className="italic text-primary">Capital Gap</span></h2>
+            </div>
+            
+            <div className="space-y-8 text-foreground/60 leading-relaxed">
+              <div className="flex gap-4">
+                <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
+                <p><strong>The Challenge:</strong> Small-scale artisans in Nairobi lacked access to formal credit, limiting their ability to scale production for export.</p>
+              </div>
+              <div className="flex gap-4">
+                <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
+                <p><strong>The Solution:</strong> Yedna implemented a peer-trust credit system that evaluated risk based on community standing and transaction history rather than collateral.</p>
+              </div>
+              <div className="flex gap-4">
+                <CheckCircle2 className="text-primary flex-shrink-0" size={24} />
+                <p><strong>The Outcome:</strong> Over 1,200 artisans secured funding within the first year, resulting in a 40% average increase in household income for participants.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
       <Footer />
     </main>
