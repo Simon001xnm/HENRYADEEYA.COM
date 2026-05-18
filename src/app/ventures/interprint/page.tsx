@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -27,13 +26,15 @@ export default function InterprintPage() {
           </h1>
 
           <div className="relative aspect-video w-full mb-12 overflow-hidden border border-primary/10">
-            <Image 
-              src={ventureImg?.imageUrl || ''} 
-              alt="Interprint Digital Infrastructure" 
-              fill 
-              className="object-cover"
-              data-ai-hint={ventureImg?.imageHint}
-            />
+            {ventureImg?.imageUrl && (
+              <Image 
+                src={ventureImg.imageUrl} 
+                alt="Interprint Digital Infrastructure" 
+                fill 
+                className="object-cover"
+                data-ai-hint={ventureImg.imageHint}
+              />
+            )}
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 py-12 border-y border-primary/10 mb-12">

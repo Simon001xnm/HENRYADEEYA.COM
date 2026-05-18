@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -33,13 +32,15 @@ export default function YednaPage() {
             </div>
 
             <div className="relative aspect-video overflow-hidden border border-primary/10">
-              <Image 
-                src={ventureImg?.imageUrl || ''} 
-                alt="Yedna Vision" 
-                fill 
-                className="object-cover"
-                data-ai-hint={ventureImg?.imageHint}
-              />
+              {ventureImg?.imageUrl && (
+                <Image 
+                  src={ventureImg.imageUrl} 
+                  alt="Yedna Vision" 
+                  fill 
+                  className="object-cover"
+                  data-ai-hint={ventureImg.imageHint}
+                />
+              )}
             </div>
 
             <div className="grid sm:grid-cols-2 gap-8 pt-8">

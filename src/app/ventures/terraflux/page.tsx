@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -33,13 +32,15 @@ export default function TerrafluxPage() {
             </div>
 
             <div className="relative aspect-video w-full overflow-hidden border border-primary/10">
-              <Image 
-                src={ventureImg?.imageUrl || ''} 
-                alt="Terraflux Engineering Solutions" 
-                fill 
-                className="object-cover"
-                data-ai-hint={ventureImg?.imageHint}
-              />
+              {ventureImg?.imageUrl && (
+                <Image 
+                  src={ventureImg.imageUrl} 
+                  alt="Terraflux Engineering Solutions" 
+                  fill 
+                  className="object-cover"
+                  data-ai-hint={ventureImg.imageHint}
+                />
+              )}
             </div>
 
             <div className="space-y-6 text-foreground/60 text-lg leading-relaxed">

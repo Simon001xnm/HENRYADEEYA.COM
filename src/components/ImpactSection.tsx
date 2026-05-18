@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -32,14 +31,16 @@ export function ImpactSection() {
         <div className="order-2 md:order-1 relative h-[600px] w-full group">
           <div className="absolute inset-0 border border-primary/20 translate-x-6 translate-y-6 -z-10 group-hover:translate-x-8 group-hover:translate-y-8 transition-transform duration-500" />
           <div className="relative h-full w-full overflow-hidden">
-            <Image 
-              src={impactImg?.imageUrl || ''} 
-              alt="Grounded In Purpose Impact" 
-              fill 
-              className="object-cover"
-              quality={100}
-              data-ai-hint={impactImg?.imageHint}
-            />
+            {impactImg?.imageUrl && (
+              <Image 
+                src={impactImg.imageUrl} 
+                alt="Grounded In Purpose Impact" 
+                fill 
+                className="object-cover"
+                quality={100}
+                data-ai-hint={impactImg.imageHint}
+              />
+            )}
           </div>
         </div>
 

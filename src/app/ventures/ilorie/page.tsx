@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useRef, useEffect } from 'react';
@@ -37,17 +36,19 @@ export default function IloriePage() {
           </div>
 
           <div className="relative aspect-video w-full overflow-hidden border border-primary/20 shadow-2xl">
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src={videoAsset?.imageUrl || ''} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            {videoAsset?.imageUrl && (
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              >
+                <source src={videoAsset.imageUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )}
           </div>
 
           <p className="text-2xl text-foreground/60 leading-relaxed font-accent max-w-2xl mx-auto">
