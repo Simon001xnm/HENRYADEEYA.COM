@@ -1,9 +1,12 @@
+
 "use client"
 
 import React from 'react';
 import { BarChart3, Rocket, Sprout, Heart } from 'lucide-react';
 import { useScrollReveal } from '@/hooks/use-scroll-reveal';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const pillars = [
   {
@@ -30,6 +33,7 @@ const pillars = [
 
 export function AboutSection() {
   const { ref, isVisible } = useScrollReveal();
+  const signatureImage = PlaceHolderImages.find(img => img.id === 'profile-signature');
 
   return (
     <section id="about" className="py-24 px-6 md:px-20 bg-secondary/30">
@@ -53,6 +57,17 @@ export function AboutSection() {
             <p>
               Henry Adeeya is a <strong className="text-foreground">Nairobi-based entrepreneur, leader, and servant</strong> with a deeply held conviction that business, leadership, and faith are not separate callings — they are one integrated purpose.
             </p>
+            <div className="relative w-full aspect-[4/3] my-8 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 border border-primary/10">
+              {signatureImage && (
+                <Image 
+                  src={signatureImage.imageUrl}
+                  alt={signatureImage.description}
+                  fill
+                  className="object-cover"
+                  data-ai-hint={signatureImage.imageHint}
+                />
+              )}
+            </div>
             <p>
               He has built a portfolio of ventures spanning fintech, engineering, IT solutions, and financial consultancy — driven by a belief that <strong className="text-primary">enterprise is most powerful when it uplifts communities</strong> and creates lasting change.
             </p>

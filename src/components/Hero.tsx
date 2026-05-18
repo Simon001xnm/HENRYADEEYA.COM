@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useState } from 'react';
@@ -6,10 +7,17 @@ import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 export function Hero() {
   const [mounted, setMounted] = useState(false);
-  const heroProfile = PlaceHolderImages.find(img => img.id === 'hero-profile');
+  const heroImages = PlaceHolderImages.filter(img => img.id.startsWith('hero-'));
+  const profileImage = PlaceHolderImages.find(img => img.id === 'profile-signature');
 
   useEffect(() => {
     setMounted(true);
@@ -49,25 +57,44 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Right Visuals */}
+      {/* Right Visuals - Slide Motion */}
       <div className="hidden md:flex flex-1 relative">
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
         <div className="absolute left-0 top-1/4 bottom-1/4 w-[1px] bg-gradient-to-b from-transparent via-primary to-transparent z-10" />
         
-        <div className="relative w-full h-full grayscale hover:grayscale-0 transition-all duration-1000 overflow-hidden">
-          <Image 
-            src={heroProfile?.imageUrl || ''} 
-            alt={heroProfile?.description || 'Henry Adeeya'}
-            fill
-            className="object-cover object-top"
-            priority
-            data-ai-hint={heroProfile?.imageHint}
-          />
-          <div className="absolute inset-0 bg-background/20" />
-        </div>
+        <Carousel 
+          className="w-full h-full"
+          plugins={[
+            Autoplay({
+              delay: 4000,
+            }),
+          ]}
+          opts={{
+            loop: true,
+            duration: 60,
+          }}
+        >
+          <CarouselContent className="h-screen ml-0">
+            {heroImages.map((img, index) => (
+              <CarouselItem key={index} className="pl-0 h-full relative">
+                <div className="relative w-full h-full grayscale hover:grayscale-0 transition-all duration-1000 overflow-hidden">
+                  <Image 
+                    src={img.imageUrl} 
+                    alt={img.description}
+                    fill
+                    className="object-cover object-center"
+                    priority={index === 0}
+                    data-ai-hint={img.imageHint}
+                  />
+                  <div className="absolute inset-0 bg-background/20" />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
 
         {/* Initials Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] select-none pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] select-none pointer-events-none z-0">
           <span className="font-headline text-[25vw] font-black tracking-tighter">HA</span>
         </div>
 
