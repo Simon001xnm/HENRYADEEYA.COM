@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -56,13 +57,14 @@ export function AboutSection() {
             <p>
               Henry Adeeya is a <strong className="text-foreground">Nairobi-based entrepreneur, leader, and servant</strong> with a deeply held conviction that business, leadership, and faith are not separate callings — they are one integrated purpose.
             </p>
-            <div className="relative w-full aspect-[4/3] my-8 overflow-hidden border border-primary/10">
+            <div className="relative w-full aspect-[4/5] my-8 overflow-hidden border border-primary/20 shadow-2xl">
               {signatureImage && (
                 <Image 
                   src={signatureImage.imageUrl}
                   alt={signatureImage.description}
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
+                  quality={100}
                   data-ai-hint={signatureImage.imageHint}
                 />
               )}

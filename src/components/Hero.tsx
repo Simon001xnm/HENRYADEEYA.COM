@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useState } from 'react';
@@ -57,7 +58,7 @@ export function Hero() {
 
       {/* Right Visuals - Slide Motion */}
       <div className="hidden md:flex flex-1 relative">
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent z-10" />
         <div className="absolute left-0 top-1/4 bottom-1/4 w-[1px] bg-gradient-to-b from-transparent via-primary to-transparent z-10" />
         
         <Carousel 
@@ -82,6 +83,7 @@ export function Hero() {
                     fill
                     className="object-cover object-center"
                     priority={index === 0}
+                    quality={100}
                     data-ai-hint={img.imageHint}
                   />
                 </div>

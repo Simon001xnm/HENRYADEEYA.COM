@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -36,6 +37,7 @@ export function ImpactSection() {
               alt="Ministry Impact" 
               fill 
               className="object-cover"
+              quality={100}
               data-ai-hint={impactImg?.imageHint}
             />
           </div>
