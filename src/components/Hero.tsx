@@ -1,22 +1,28 @@
 
 "use client"
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function Hero() {
   const [mounted, setMounted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setMounted(true);
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Fallback for browsers that block autoplay
+      });
+    }
   }, []);
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col md:flex-row overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex flex-col md:flex-row overflow-hidden bg-background">
       {/* Left Content */}
-      <div className="flex-1 flex flex-col justify-center px-6 md:px-20 pt-32 pb-20 z-10">
+      <div className="flex-1 flex flex-col justify-center px-6 md:px-20 pt-32 pb-20 z-10 bg-background/40 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none">
         <div className={cn("reveal-up", mounted && "visible")}>
           <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-6 block">
             Economist · Entrepreneur · Servant Leader
@@ -48,12 +54,12 @@ export function Hero() {
       </div>
 
       {/* Right Visuals - Continuous Cinematic Video */}
-      <div className="hidden md:flex flex-1 relative">
-        <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent z-10" />
-        <div className="absolute left-0 top-1/4 bottom-1/4 w-[1px] bg-gradient-to-b from-transparent via-primary to-transparent z-10" />
+      <div className="flex-1 relative min-h-[40vh] md:min-h-screen">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent md:bg-gradient-to-l md:from-transparent md:via-transparent md:to-background z-10" />
         
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <video
+            ref={videoRef}
             autoPlay
             loop
             muted
@@ -72,25 +78,25 @@ export function Hero() {
 
         {/* Floating Stats */}
         <div className={cn(
-          "absolute bottom-12 right-12 z-20 flex gap-12 bg-background/80 backdrop-blur-xl border border-primary/10 p-10 reveal-up stagger-3",
+          "absolute bottom-12 right-6 left-6 md:left-auto md:right-12 z-20 flex justify-between md:justify-start gap-6 md:gap-12 bg-background/80 backdrop-blur-xl border border-primary/10 p-6 md:p-10 reveal-up stagger-3",
           mounted && "visible"
         )}>
           <div className="text-center">
-            <span className="block font-headline text-3xl font-bold text-primary">4+</span>
-            <span className="text-[0.6rem] uppercase tracking-widest text-foreground/40">Ventures</span>
+            <span className="block font-headline text-2xl md:text-3xl font-bold text-primary">4+</span>
+            <span className="text-[0.5rem] md:text-[0.6rem] uppercase tracking-widest text-foreground/40">Ventures</span>
           </div>
-          <div className="text-center border-x border-primary/10 px-12">
-            <span className="block font-headline text-3xl font-bold text-primary">5+</span>
-            <span className="text-[0.6rem] uppercase tracking-widest text-foreground/40">Yrs Leading</span>
+          <div className="text-center border-x border-primary/10 px-6 md:px-12">
+            <span className="block font-headline text-2xl md:text-3xl font-bold text-primary">5+</span>
+            <span className="text-[0.5rem] md:text-[0.6rem] uppercase tracking-widest text-foreground/40">Yrs Leading</span>
           </div>
           <div className="text-center">
-            <span className="block font-headline text-3xl font-bold text-primary">NBO</span>
-            <span className="text-[0.6rem] uppercase tracking-widest text-foreground/40">Kenya</span>
+            <span className="block font-headline text-2xl md:text-3xl font-bold text-primary">NBO</span>
+            <span className="text-[0.5rem] md:text-[0.6rem] uppercase tracking-widest text-foreground/40">Kenya</span>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 md:hidden animate-bounce text-primary">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 md:hidden animate-bounce text-primary z-20">
         <ArrowDown size={24} />
       </div>
     </section>
