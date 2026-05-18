@@ -1,0 +1,35 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "Henry Adeeya Professional Vision",
+      "imageUrl": "https://picsum.photos/seed/adeeya1/1920/1080",
+      "imageHint": "professional man"
+    },
+    {
+      "id": "hero-2",
+      "description": "Henry Adeeya Leadership Excellence",
+      "imageUrl": "https://picsum.photos/seed/adeeya2/1920/1080",
+      "imageHint": "business leader"
+    },
+    {
+      "id": "hero-3",
+      "description": "Henry Adeeya Strategic Impact",
+      "imageUrl": "https://picsum.photos/seed/adeeya3/1920/1080",
+      "imageHint": "mentor"
+    },
+    {
+      "id": "ministry-impact",
+      "description": "Henry Adeeya engaging with community",
+      "imageUrl": "https://picsum.photos/seed/adeeya4/1200/800",
+      "imageHint": "community engagement"
+    },
+    {
+      "id": "profile-signature",
+      "description": "Henry Adeeya Signature Portrait",
+      "imageUrl": "https://picsum.photos/seed/adeeyasig8k/800/1000",
+      "imageHint": "portrait"
+    }
+  ]
+}
