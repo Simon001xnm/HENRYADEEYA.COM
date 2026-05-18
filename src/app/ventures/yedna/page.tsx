@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -7,10 +6,9 @@ import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Wallet, TrendingUp, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function YednaPage() {
-  const ventureImg = PlaceHolderImages.find(img => img.id === 'yedna-vision');
+  const heroImageUrl = "/300c56d6f16b0221bb0b7553cb39b09f.jpg";
   
   return (
     <main className="min-h-screen bg-background">
@@ -32,16 +30,14 @@ export default function YednaPage() {
               </p>
             </div>
 
-            <div className="relative aspect-video overflow-hidden border border-primary/10">
-              {ventureImg?.imageUrl && (
-                <Image 
-                  src={ventureImg.imageUrl} 
-                  alt={ventureImg.description} 
-                  fill 
-                  className="object-cover"
-                  data-ai-hint={ventureImg.imageHint}
-                />
-              )}
+            <div className="relative aspect-video overflow-hidden border border-primary/10 bg-muted">
+              <Image 
+                src={heroImageUrl} 
+                alt="Yedna Financial Vision" 
+                fill 
+                className="object-cover"
+                priority
+              />
             </div>
 
             <div className="grid sm:grid-cols-2 gap-8 pt-8">
