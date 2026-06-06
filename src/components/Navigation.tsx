@@ -1,5 +1,5 @@
 
-"use client"
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export function Navigation() {
 
   const navItems = [
     { label: 'About', href: '/#about' },
-    { label: 'Messages', href: '/#ministry-videos' },
+    { label: 'Messages', href: '/messages' },
     { label: 'Impact', href: '/#impact' },
     { label: 'Contact', href: '/#contact' },
   ];
@@ -50,7 +50,10 @@ export function Navigation() {
             <Link 
               key={item.label} 
               href={item.href} 
-              className="text-[0.7rem] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors"
+              className={cn(
+                "text-[0.7rem] uppercase tracking-[0.2em] transition-colors",
+                pathname === item.href ? "text-primary" : "text-foreground/70 hover:text-primary"
+              )}
             >
               {item.label}
             </Link>
