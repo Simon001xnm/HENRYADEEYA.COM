@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useUser, useFirestore, useAuth } from '@/firebase';
 import { signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -11,10 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle } from 'lucide-react';
+import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // SPECIFIC ADMIN EMAIL
 const ADMIN_EMAIL = "henryadeeya@gmail.com"; 
@@ -25,6 +26,7 @@ export default function AdminPage() {
   const db = useFirestore();
   const [loading, setLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   // Login State
   const [email, setEmail] = useState('');
@@ -40,11 +42,13 @@ export default function AdminPage() {
 
   const handleGoogleLogin = async () => {
     setLoginLoading(true);
+    setLoginError(null);
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
     } catch (error: any) {
-      toast({ variant: "destructive", title: "Login Failed", description: error.message || "Google authentication was unsuccessful." });
+      setLoginError(error.message || "Google authentication was unsuccessful.");
+      toast({ variant: "destructive", title: "Login Failed", description: "Google authentication failed." });
     } finally {
       setLoginLoading(false);
     }
@@ -53,14 +57,21 @@ export default function AdminPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
+    setLoginError(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({ title: "Welcome back", description: "You have successfully authenticated." });
     } catch (error: any) {
+      console.error(error);
+      let msg = "Please verify your credentials.";
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        msg = "Account not found or password incorrect. Ensure you have created this user in the Firebase Console.";
+      }
+      setLoginError(msg);
       toast({ 
         variant: "destructive", 
-        title: "Login Failed", 
-        description: "Please verify your credentials. If you haven't created an account yet, please do so in the Firebase console." 
+        title: "Authentication Error", 
+        description: msg
       });
     } finally {
       setLoginLoading(false);
@@ -119,6 +130,16 @@ export default function AdminPage() {
 
             <Card className="w-full max-w-md bg-card border-primary/10 rounded-none shadow-2xl">
               <CardContent className="pt-8 space-y-6">
+                {loginError && (
+                  <Alert variant="destructive" className="rounded-none bg-destructive/10 border-destructive/20 text-destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription className="text-xs">
+                      {loginError}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <form onSubmit={handleEmailLogin} className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Admin Email</label>
@@ -171,6 +192,10 @@ export default function AdminPage() {
                 >
                   Authorize with Google
                 </Button>
+
+                <p className="text-[0.6rem] text-center text-foreground/30 italic">
+                  Note: The admin account must be manually added in the Firebase Authentication console.
+                </p>
               </CardContent>
             </Card>
           </div>
