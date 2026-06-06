@@ -7,11 +7,13 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import { useUser } from '@/firebase';
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,10 +25,14 @@ export function Navigation() {
 
   const navItems = [
     { label: 'About', href: '/#about' },
-    { label: 'Ventures', href: '/#ventures' },
+    { label: 'Messages', href: '/#ministry-videos' },
     { label: 'Impact', href: '/#impact' },
     { label: 'Contact', href: '/#contact' },
   ];
+
+  if (user?.email === "henryadeeya@gmail.com") {
+    navItems.push({ label: 'Admin', href: '/admin' });
+  }
 
   return (
     <nav className={cn(

@@ -2,7 +2,7 @@
 import { Navigation } from '@/components/Navigation';
 import { Hero } from '@/components/Hero';
 import { AboutSection } from '@/components/AboutSection';
-import { VenturesSection } from '@/components/VenturesSection';
+import { VideoFeedSection } from '@/components/VideoFeedSection';
 import { ImpactSection } from '@/components/ImpactSection';
 import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
@@ -14,7 +14,7 @@ export default function Home() {
       <Navigation />
       <Hero />
       <AboutSection />
-      <VenturesSection />
+      <VideoFeedSection />
       <ImpactSection />
       <ContactSection />
       <Footer />

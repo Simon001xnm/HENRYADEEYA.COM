@@ -1,0 +1,29 @@
+
+{
+  "entities": {
+    "Video": {
+      "title": "Video",
+      "description": "Metadata for a ministry video.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "thumbnailUrl": { "type": "string" },
+        "likesCount": { "type": "number" },
+        "likedBy": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "videoUrl", "thumbnailUrl"]
+    }
+  },
+  "auth": {
+    "providers": ["google.com"]
+  },
+  "firestore": {
+    "/videos/{videoId}": {
+      "schema": "#/backend/entities/Video",
+      "description": "Collection of videos uploaded by the ministry admin."
+    }
+  }
+}
