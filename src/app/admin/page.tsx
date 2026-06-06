@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser, useFirestore, useAuth } from '@/firebase';
 import { signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -11,8 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock } from 'lucide-react';
+import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 // SPECIFIC ADMIN EMAIL
 const ADMIN_EMAIL = "henryadeeya@gmail.com"; 
@@ -41,8 +43,8 @@ export default function AdminPage() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-    } catch (error) {
-      toast({ variant: "destructive", title: "Login Failed", description: "Google authentication was unsuccessful." });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Login Failed", description: error.message || "Google authentication was unsuccessful." });
     } finally {
       setLoginLoading(false);
     }
@@ -53,11 +55,12 @@ export default function AdminPage() {
     setLoginLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
+      toast({ title: "Welcome back", description: "You have successfully authenticated." });
+    } catch (error: any) {
       toast({ 
         variant: "destructive", 
         title: "Login Failed", 
-        description: "Please verify your credentials and try again." 
+        description: "Please verify your credentials. If you haven't created an account yet, please do so in the Firebase console." 
       });
     } finally {
       setLoginLoading(false);
@@ -69,22 +72,31 @@ export default function AdminPage() {
     if (!user || user.email !== ADMIN_EMAIL) return;
     
     setLoading(true);
-    try {
-      await addDoc(collection(db, 'videos'), {
-        ...videoData,
-        likesCount: 0,
-        likedBy: [],
-        createdAt: serverTimestamp(),
-        authorId: user.uid
+    const dataToSave = {
+      ...videoData,
+      likesCount: 0,
+      likedBy: [],
+      createdAt: serverTimestamp(),
+      authorId: user.uid
+    };
+
+    const videosRef = collection(db, 'videos');
+    addDoc(videosRef, dataToSave)
+      .then(() => {
+        toast({ title: "Message Published", description: "The video is now live on your platform." });
+        setVideoData({ title: '', description: '', videoUrl: '', thumbnailUrl: '' });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: 'videos',
+          operation: 'create',
+          requestResourceData: dataToSave,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-      
-      toast({ title: "Message Published", description: "The video is now live on your platform." });
-      setVideoData({ title: '', description: '', videoUrl: '', thumbnailUrl: '' });
-    } catch (error) {
-      toast({ variant: "destructive", title: "Publishing Error", description: "There was a problem saving the video metadata." });
-    } finally {
-      setLoading(false);
-    }
   };
 
   if (userLoading) return (
@@ -139,9 +151,9 @@ export default function AdminPage() {
                   <Button 
                     type="submit" 
                     disabled={loginLoading} 
-                    className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-widest font-bold"
+                    className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-widest font-bold transition-all"
                   >
-                    {loginLoading ? <Loader2 className="animate-spin" /> : "Sign In"}
+                    {loginLoading ? <Loader2 className="animate-spin" /> : "Sign In to Dashboard"}
                   </Button>
                 </form>
 
@@ -164,8 +176,9 @@ export default function AdminPage() {
           </div>
         ) : user.email !== ADMIN_EMAIL ? (
           <div className="text-center py-20 space-y-6 animate-in fade-in duration-500">
+            <ShieldCheck size={48} className="text-destructive mx-auto" />
             <h1 className="text-2xl text-destructive font-bold">Access Restricted</h1>
-            <p className="text-foreground/50">This dashboard is reserved for the primary administrator.</p>
+            <p className="text-foreground/50">This dashboard is reserved for the primary administrator: <br/><span className="text-primary">{ADMIN_EMAIL}</span></p>
             <Button variant="outline" className="rounded-none border-primary/20" onClick={() => signOut(auth)}>Log Out</Button>
           </div>
         ) : (
@@ -173,7 +186,9 @@ export default function AdminPage() {
             <div className="flex items-center justify-between border-b border-primary/10 pb-8">
               <div>
                 <h1 className="font-headline text-4xl">Admin <span className="text-primary italic">Nexus</span></h1>
-                <p className="text-[0.6rem] uppercase tracking-[0.2em] text-foreground/30 mt-2 font-bold">Account: {user.email}</p>
+                <p className="text-[0.6rem] uppercase tracking-[0.2em] text-foreground/30 mt-2 font-bold flex items-center gap-2">
+                  <CheckCircle size={12} className="text-green-500" /> Authenticated: {user.email}
+                </p>
               </div>
               <Button variant="ghost" onClick={() => signOut(auth)} className="text-foreground/40 hover:text-destructive rounded-none">
                 <LogOut className="mr-2" size={16} /> Log Out
