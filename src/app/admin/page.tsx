@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useUser, useFirestore, useAuth } from '@/firebase';
-import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
@@ -11,10 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Loader2, Plus, LogOut, ShieldCheck } from 'lucide-react';
+import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-// SPECIFIC ADMIN EMAIL (Change this to your actual email)
+// SPECIFIC ADMIN EMAIL
 const ADMIN_EMAIL = "henryadeeya@gmail.com"; 
 
 export default function AdminPage() {
@@ -22,7 +22,13 @@ export default function AdminPage() {
   const auth = useAuth();
   const db = useFirestore();
   const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
 
+  // Login State
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Video Upload State
   const [videoData, setVideoData] = useState({
     title: '',
     description: '',
@@ -30,12 +36,31 @@ export default function AdminPage() {
     thumbnailUrl: ''
   });
 
-  const handleLogin = async () => {
+  const handleGoogleLogin = async () => {
+    setLoginLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
     } catch (error) {
-      toast({ variant: "destructive", title: "Login Failed" });
+      toast({ variant: "destructive", title: "Login Failed", description: "Google authentication was unsuccessful." });
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      toast({ 
+        variant: "destructive", 
+        title: "Login Failed", 
+        description: "Please verify your credentials and try again." 
+      });
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -56,43 +81,101 @@ export default function AdminPage() {
       toast({ title: "Message Published", description: "The video is now live on your platform." });
       setVideoData({ title: '', description: '', videoUrl: '', thumbnailUrl: '' });
     } catch (error) {
-      toast({ variant: "destructive", title: "Publishing Error" });
+      toast({ variant: "destructive", title: "Publishing Error", description: "There was a problem saving the video metadata." });
     } finally {
       setLoading(false);
     }
   };
 
-  if (userLoading) return null;
+  if (userLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <Loader2 className="animate-spin text-primary" size={48} />
+    </div>
+  );
 
   return (
     <main className="min-h-screen bg-background">
       <Navigation />
       <div className="pt-32 pb-24 px-6 md:px-20 max-w-4xl mx-auto">
         {!user ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center space-y-8">
-            <ShieldCheck size={64} className="text-primary/20" />
-            <div>
-              <h1 className="font-headline text-4xl mb-4">Ministry Dashboard</h1>
-              <p className="text-foreground/40 max-w-sm">Please authenticate to manage your visual messages.</p>
+          <div className="flex flex-col items-center justify-center py-10 space-y-12">
+            <div className="text-center space-y-4">
+              <ShieldCheck size={64} className="text-primary/20 mx-auto" />
+              <h1 className="font-headline text-4xl">Ministry <span className="text-primary italic">Dashboard</span></h1>
+              <p className="text-foreground/40 max-w-sm mx-auto">Authenticate to manage your visual messages.</p>
             </div>
-            <Button onClick={handleLogin} className="bg-primary text-background rounded-none px-10 h-14 uppercase tracking-widest font-bold">
-              Sign in with Google
-            </Button>
+
+            <Card className="w-full max-w-md bg-card border-primary/10 rounded-none shadow-2xl">
+              <CardContent className="pt-8 space-y-6">
+                <form onSubmit={handleEmailLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Admin Email</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" size={16} />
+                      <Input 
+                        type="email"
+                        required
+                        placeholder="admin@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-10 rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Secret Key</label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" size={16} />
+                      <Input 
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-10 rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                      />
+                    </div>
+                  </div>
+                  <Button 
+                    type="submit" 
+                    disabled={loginLoading} 
+                    className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-widest font-bold"
+                  >
+                    {loginLoading ? <Loader2 className="animate-spin" /> : "Sign In"}
+                  </Button>
+                </form>
+
+                <div className="relative flex items-center py-4">
+                  <div className="flex-grow border-t border-primary/5"></div>
+                  <span className="flex-shrink mx-4 text-[0.6rem] uppercase tracking-widest text-foreground/30">Or use Google</span>
+                  <div className="flex-grow border-t border-primary/5"></div>
+                </div>
+
+                <Button 
+                  onClick={handleGoogleLogin} 
+                  variant="outline"
+                  disabled={loginLoading}
+                  className="w-full border-primary/20 rounded-none h-14 uppercase tracking-widest text-[0.7rem] font-bold"
+                >
+                  Authorize with Google
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         ) : user.email !== ADMIN_EMAIL ? (
-          <div className="text-center py-20 space-y-6">
+          <div className="text-center py-20 space-y-6 animate-in fade-in duration-500">
             <h1 className="text-2xl text-destructive font-bold">Access Restricted</h1>
             <p className="text-foreground/50">This dashboard is reserved for the primary administrator.</p>
-            <Button variant="outline" onClick={() => signOut(auth)}>Log Out</Button>
+            <Button variant="outline" className="rounded-none border-primary/20" onClick={() => signOut(auth)}>Log Out</Button>
           </div>
         ) : (
-          <div className="space-y-12">
+          <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center justify-between border-b border-primary/10 pb-8">
               <div>
                 <h1 className="font-headline text-4xl">Admin <span className="text-primary italic">Nexus</span></h1>
-                <p className="text-xs uppercase tracking-[0.2em] text-foreground/30 mt-2">Welcome, {user.displayName}</p>
+                <p className="text-[0.6rem] uppercase tracking-[0.2em] text-foreground/30 mt-2 font-bold">Account: {user.email}</p>
               </div>
-              <Button variant="ghost" onClick={() => signOut(auth)} className="text-foreground/40 hover:text-destructive">
+              <Button variant="ghost" onClick={() => signOut(auth)} className="text-foreground/40 hover:text-destructive rounded-none">
                 <LogOut className="mr-2" size={16} /> Log Out
               </Button>
             </div>
