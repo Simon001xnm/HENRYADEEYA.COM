@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -27,7 +26,7 @@ export default function BlogDetailPage() {
   const handleShare = () => {
     const shareUrl = window.location.href;
     navigator.clipboard.writeText(shareUrl);
-    toast({ title: "Link Copied", description: "Journal entry link ready to share." });
+    toast({ title: "Link Copied", description: "Blog entry link ready to share." });
   };
 
   if (loading) {
@@ -42,7 +41,7 @@ export default function BlogDetailPage() {
     return (
       <main className="min-h-screen bg-background flex flex-col items-center justify-center space-y-6">
         <h1 className="text-2xl font-headline">Entry not found.</h1>
-        <Button variant="outline" onClick={() => router.push('/blogs')}>Return to Journal</Button>
+        <Button variant="outline" onClick={() => router.push('/blogs')}>Return to Blog</Button>
       </main>
     );
   }
@@ -56,7 +55,7 @@ export default function BlogDetailPage() {
           onClick={() => router.back()} 
           className="inline-flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.2em] text-primary hover:text-foreground transition-colors mb-12"
         >
-          <ArrowLeft size={14} /> Back to Journal
+          <ArrowLeft size={14} /> Back to Blog
         </button>
 
         <article className="space-y-12">
@@ -115,7 +114,7 @@ export default function BlogDetailPage() {
               <p className="font-accent text-2xl italic text-foreground/50">
                 "Writing is the geometry of the soul."
               </p>
-              <span className="text-[0.6rem] uppercase tracking-[0.3em] text-primary block">— Journal Entry Reflections</span>
+              <span className="text-[0.6rem] uppercase tracking-[0.3em] text-primary block">— Blog Entry Reflections</span>
             </div>
           </div>
         </article>

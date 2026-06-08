@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -26,7 +25,7 @@ export function Navigation() {
   const navItems = [
     { label: 'About', href: '/#about' },
     { label: 'Messages', href: '/messages' },
-    { label: 'Journal', href: '/blogs' },
+    { label: 'Blog', href: '/blogs' },
     { label: 'Impact', href: '/#impact' },
     { label: 'Contact', href: '/#contact' },
   ];

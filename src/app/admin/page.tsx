@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -129,7 +128,7 @@ export default function AdminPage() {
     const blogsRef = collection(db, 'blogs');
     addDoc(blogsRef, dataToSave)
       .then(() => {
-        toast({ title: "Journal Posted", description: "Your new blog post is now live." });
+        toast({ title: "Blog Posted", description: "Your new blog post is now live." });
         setBlogData({ title: '', content: '', imageUrl: '', videoUrl: '' });
       })
       .catch(async (error) => {
@@ -257,7 +256,7 @@ export default function AdminPage() {
                   <Video size={16} /> Visual Messages
                 </TabsTrigger>
                 <TabsTrigger value="blogs" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-background uppercase tracking-widest text-xs flex gap-2">
-                  <FileText size={16} /> Written Journal
+                  <FileText size={16} /> Ministry Blog
                 </TabsTrigger>
               </TabsList>
 
@@ -319,12 +318,12 @@ export default function AdminPage() {
               <TabsContent value="blogs">
                 <Card className="bg-card border-primary/10 rounded-none shadow-2xl">
                   <CardHeader>
-                    <CardTitle className="font-headline text-2xl">New Journal Entry</CardTitle>
+                    <CardTitle className="font-headline text-2xl">New Blog Entry</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleUploadBlog} className="space-y-6">
                       <div className="space-y-2">
-                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Article Title</label>
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Blog Title</label>
                         <Input 
                           required
                           placeholder="e.g. Reflections on Faith in Business"
@@ -353,7 +352,7 @@ export default function AdminPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Article Content</label>
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Blog Content</label>
                         <Textarea 
                           required
                           placeholder="Pen your reflections here..."
@@ -363,7 +362,7 @@ export default function AdminPage() {
                         />
                       </div>
                       <Button type="submit" disabled={loading} className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-[0.3em] text-[0.7rem] font-bold">
-                        {loading ? <Loader2 className="animate-spin" /> : <><Plus className="mr-2 h-4 w-4" /> Post Journal Entry</>}
+                        {loading ? <Loader2 className="animate-spin" /> : <><Plus className="mr-2 h-4 w-4" /> Post Blog Entry</>}
                       </Button>
                     </form>
                   </CardContent>

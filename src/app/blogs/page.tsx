@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useMemo } from 'react';
@@ -28,7 +27,7 @@ export default function BlogGalleryPage() {
         <div className="mb-20">
           <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Written Ministry</span>
           <h1 className="font-headline text-5xl md:text-7xl font-bold text-foreground">
-            The Journal <br /><span className="italic text-primary">of Faith</span>
+            The Ministry <br /><span className="italic text-primary">Blog</span>
           </h1>
           <div className="w-16 h-1 bg-primary mt-6" />
         </div>
@@ -63,7 +62,7 @@ export default function BlogGalleryPage() {
                       {blog.content}
                     </p>
                     <div className="pt-4 flex items-center gap-2 text-primary text-[0.6rem] uppercase tracking-[0.2em] font-bold">
-                      Read Entry <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                      Read Blog <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
                     </div>
                   </div>
                 </article>
@@ -72,7 +71,7 @@ export default function BlogGalleryPage() {
 
             {blogs.length === 0 && (
               <div className="col-span-full text-center py-32 border border-dashed border-primary/20">
-                <p className="text-foreground/30 italic font-accent text-2xl">The journal is waiting for its first entry.</p>
+                <p className="text-foreground/30 italic font-accent text-2xl">The blog is waiting for its first entry.</p>
               </div>
             )}
           </div>
