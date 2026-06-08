@@ -26,6 +26,7 @@ export function Navigation() {
   const navItems = [
     { label: 'About', href: '/#about' },
     { label: 'Messages', href: '/messages' },
+    { label: 'Journal', href: '/blogs' },
     { label: 'Impact', href: '/#impact' },
     { label: 'Contact', href: '/#contact' },
   ];

@@ -15,6 +15,21 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["title", "videoUrl", "thumbnailUrl"]
+    },
+    "BlogPost": {
+      "title": "Blog Post",
+      "description": "A ministry journal entry or article.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "videoUrl": { "type": "string", "description": "Optional video embed for the blog." },
+        "authorName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "published": { "type": "boolean" }
+      },
+      "required": ["title", "content", "imageUrl"]
     }
   },
   "auth": {
@@ -24,6 +39,10 @@
     "/videos/{videoId}": {
       "schema": "#/backend/entities/Video",
       "description": "Collection of videos uploaded by the ministry admin."
+    },
+    "/blogs/{blogId}": {
+      "schema": "#/backend/entities/BlogPost",
+      "description": "Collection of blog posts and articles."
     }
   }
 }

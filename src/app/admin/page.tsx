@@ -11,7 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle, AlertCircle, Video, FileText } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -40,6 +41,14 @@ export default function AdminPage() {
     thumbnailUrl: ''
   });
 
+  // Blog Upload State
+  const [blogData, setBlogData] = useState({
+    title: '',
+    content: '',
+    imageUrl: '',
+    videoUrl: ''
+  });
+
   const handleGoogleLogin = async () => {
     setLoginLoading(true);
     setLoginError(null);
@@ -48,7 +57,6 @@ export default function AdminPage() {
       await signInWithPopup(auth, provider);
     } catch (error: any) {
       setLoginError(error.message || "Google authentication was unsuccessful.");
-      toast({ variant: "destructive", title: "Login Failed", description: "Google authentication failed." });
     } finally {
       setLoginLoading(false);
     }
@@ -68,17 +76,12 @@ export default function AdminPage() {
         msg = "Account not found or password incorrect. Ensure you have created this user in the Firebase Console.";
       }
       setLoginError(msg);
-      toast({ 
-        variant: "destructive", 
-        title: "Authentication Error", 
-        description: msg
-      });
     } finally {
       setLoginLoading(false);
     }
   };
 
-  const handleUpload = async (e: React.FormEvent) => {
+  const handleUploadVideo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || user.email !== ADMIN_EMAIL) return;
     
@@ -110,6 +113,38 @@ export default function AdminPage() {
       });
   };
 
+  const handleUploadBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || user.email !== ADMIN_EMAIL) return;
+    
+    setLoading(true);
+    const dataToSave = {
+      ...blogData,
+      authorName: "Henry Adeeya",
+      createdAt: serverTimestamp(),
+      published: true,
+      authorId: user.uid
+    };
+
+    const blogsRef = collection(db, 'blogs');
+    addDoc(blogsRef, dataToSave)
+      .then(() => {
+        toast({ title: "Journal Posted", description: "Your new blog post is now live." });
+        setBlogData({ title: '', content: '', imageUrl: '', videoUrl: '' });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: 'blogs',
+          operation: 'create',
+          requestResourceData: dataToSave,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   if (userLoading) return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Loader2 className="animate-spin text-primary" size={48} />
@@ -125,7 +160,7 @@ export default function AdminPage() {
             <div className="text-center space-y-4">
               <ShieldCheck size={64} className="text-primary/20 mx-auto" />
               <h1 className="font-headline text-4xl">Ministry <span className="text-primary italic">Dashboard</span></h1>
-              <p className="text-foreground/40 max-w-sm mx-auto">Authenticate to manage your visual messages.</p>
+              <p className="text-foreground/40 max-w-sm mx-auto">Authenticate to manage your visual and written messages.</p>
             </div>
 
             <Card className="w-full max-w-md bg-card border-primary/10 rounded-none shadow-2xl">
@@ -192,10 +227,6 @@ export default function AdminPage() {
                 >
                   Authorize with Google
                 </Button>
-
-                <p className="text-[0.6rem] text-center text-foreground/30 italic">
-                  Note: The admin account must be manually added in the Firebase Authentication console.
-                </p>
               </CardContent>
             </Card>
           </div>
@@ -220,58 +251,125 @@ export default function AdminPage() {
               </Button>
             </div>
 
-            <Card className="bg-card border-primary/10 rounded-none shadow-2xl">
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl">Publish New Message</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleUpload} className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Title</label>
-                    <Input 
-                      required
-                      placeholder="e.g. The Power of Servant Leadership"
-                      value={videoData.title}
-                      onChange={(e) => setVideoData({...videoData, title: e.target.value})}
-                      className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Video URL (MP4)</label>
-                    <Input 
-                      required
-                      placeholder="https://example.com/video.mp4"
-                      value={videoData.videoUrl}
-                      onChange={(e) => setVideoData({...videoData, videoUrl: e.target.value})}
-                      className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Thumbnail Image URL</label>
-                    <Input 
-                      required
-                      placeholder="https://example.com/thumb.jpg"
-                      value={videoData.thumbnailUrl}
-                      onChange={(e) => setVideoData({...videoData, thumbnailUrl: e.target.value})}
-                      className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Description</label>
-                    <Textarea 
-                      required
-                      placeholder="Synthesize the core message..."
-                      value={videoData.description}
-                      onChange={(e) => setVideoData({...videoData, description: e.target.value})}
-                      className="rounded-none bg-background border-primary/5 focus:border-primary min-h-[120px]"
-                    />
-                  </div>
-                  <Button type="submit" disabled={loading} className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-[0.3em] text-[0.7rem] font-bold">
-                    {loading ? <Loader2 className="animate-spin" /> : <><Plus className="mr-2 h-4 w-4" /> Publish Video</>}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <Tabs defaultValue="videos" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 h-14 bg-card border border-primary/10 rounded-none p-1 mb-8">
+                <TabsTrigger value="videos" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-background uppercase tracking-widest text-xs flex gap-2">
+                  <Video size={16} /> Visual Messages
+                </TabsTrigger>
+                <TabsTrigger value="blogs" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-background uppercase tracking-widest text-xs flex gap-2">
+                  <FileText size={16} /> Written Journal
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="videos">
+                <Card className="bg-card border-primary/10 rounded-none shadow-2xl">
+                  <CardHeader>
+                    <CardTitle className="font-headline text-2xl">Publish New Video</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleUploadVideo} className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Video Title</label>
+                        <Input 
+                          required
+                          placeholder="e.g. The Power of Servant Leadership"
+                          value={videoData.title}
+                          onChange={(e) => setVideoData({...videoData, title: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Video URL (MP4)</label>
+                        <Input 
+                          required
+                          placeholder="https://example.com/video.mp4"
+                          value={videoData.videoUrl}
+                          onChange={(e) => setVideoData({...videoData, videoUrl: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Thumbnail Image URL</label>
+                        <Input 
+                          required
+                          placeholder="https://example.com/thumb.jpg"
+                          value={videoData.thumbnailUrl}
+                          onChange={(e) => setVideoData({...videoData, thumbnailUrl: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Short Description</label>
+                        <Textarea 
+                          required
+                          placeholder="Synthesize the core message..."
+                          value={videoData.description}
+                          onChange={(e) => setVideoData({...videoData, description: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary min-h-[120px]"
+                        />
+                      </div>
+                      <Button type="submit" disabled={loading} className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-[0.3em] text-[0.7rem] font-bold">
+                        {loading ? <Loader2 className="animate-spin" /> : <><Plus className="mr-2 h-4 w-4" /> Publish Video</>}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="blogs">
+                <Card className="bg-card border-primary/10 rounded-none shadow-2xl">
+                  <CardHeader>
+                    <CardTitle className="font-headline text-2xl">New Journal Entry</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleUploadBlog} className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Article Title</label>
+                        <Input 
+                          required
+                          placeholder="e.g. Reflections on Faith in Business"
+                          value={blogData.title}
+                          onChange={(e) => setBlogData({...blogData, title: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Cover Image URL</label>
+                        <Input 
+                          required
+                          placeholder="https://example.com/cover.jpg"
+                          value={blogData.imageUrl}
+                          onChange={(e) => setBlogData({...blogData, imageUrl: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Optional Video URL</label>
+                        <Input 
+                          placeholder="https://example.com/embed.mp4"
+                          value={blogData.videoUrl}
+                          onChange={(e) => setBlogData({...blogData, videoUrl: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Article Content</label>
+                        <Textarea 
+                          required
+                          placeholder="Pen your reflections here..."
+                          value={blogData.content}
+                          onChange={(e) => setBlogData({...blogData, content: e.target.value})}
+                          className="rounded-none bg-background border-primary/5 focus:border-primary min-h-[300px]"
+                        />
+                      </div>
+                      <Button type="submit" disabled={loading} className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-[0.3em] text-[0.7rem] font-bold">
+                        {loading ? <Loader2 className="animate-spin" /> : <><Plus className="mr-2 h-4 w-4" /> Post Journal Entry</>}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         )}
       </div>
