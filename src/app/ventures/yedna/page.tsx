@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Wallet, TrendingUp, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
-export default function YednaPage() {
+export function YednaPage() {
   const heroImageUrl = "/300c56d6f16b0221bb0b7553cb39b09f.jpg";
   
   return (
@@ -84,7 +84,7 @@ export default function YednaPage() {
         <section className="bg-secondary/20 p-12 md:p-20 border border-primary/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
-              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Balanced Case Study</span>
+              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Case Study</span>
               <h2 className="font-headline text-4xl md:text-5xl font-bold">Bridging the <span className="italic text-primary">Capital Gap</span></h2>
             </div>
             

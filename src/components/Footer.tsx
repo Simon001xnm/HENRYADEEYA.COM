@@ -13,7 +13,6 @@ export function Footer() {
         </div>
 
         <div className="text-[0.65rem] uppercase tracking-[0.15em] text-foreground/30 text-center md:text-right space-y-1">
-          <p>Balanced Cases · Built for Purpose</p>
           <p>© 2026 Henry Adeeya · Nairobi, KE</p>
         </div>
       </div>

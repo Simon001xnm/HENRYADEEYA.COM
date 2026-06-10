@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -8,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Zap, Droplets, CheckCircle2 } from 'lucide-react';
 
-export default function TerrafluxPage() {
+export function TerrafluxPage() {
   const imageUrl = "/7d58dec63e88a4272e36bde572fae2ea.jpg";
 
   return (
@@ -63,7 +62,7 @@ export default function TerrafluxPage() {
         <section className="bg-accent/5 p-12 md:p-20 border border-accent/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
-              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Balanced Case Study</span>
+              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Case Study</span>
               <h2 className="font-headline text-4xl md:text-5xl font-bold">Empowering <span className="italic text-primary">Rural Agriculture</span></h2>
             </div>
             

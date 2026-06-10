@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -8,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Cpu, Cloud, Globe, CheckCircle2 } from 'lucide-react';
 
-export default function InterprintPage() {
+export function InterprintPage() {
   const imageUrl = "/62c93e366a8339b3f001a899543153c3.jpg";
 
   return (
@@ -63,7 +62,7 @@ export default function InterprintPage() {
         <section className="bg-primary/5 p-12 md:p-20 border border-primary/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
-              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Balanced Case Study</span>
+              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Case Study</span>
               <h2 className="font-headline text-4xl md:text-5xl font-bold">Optimizing <span className="italic text-primary">Supply Chains</span></h2>
             </div>
             

@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useRef, useEffect } from 'react';
@@ -7,7 +6,7 @@ import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import { ArrowLeft, BookOpen, BarChart2, CheckCircle2 } from 'lucide-react';
 
-export default function IloriePage() {
+export function IloriePage() {
   const videoUrl = "/fffdfdsersrestyuhibj.mp4";
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -74,7 +73,7 @@ export default function IloriePage() {
         <section className="bg-secondary/20 p-12 md:p-20 border border-primary/10">
           <div className="max-w-3xl mx-auto space-y-12">
             <div className="text-center">
-              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Balanced Case Study</span>
+              <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Case Study</span>
               <h2 className="font-headline text-4xl md:text-5xl font-bold">Securing <span className="italic text-primary">Corporate Governance</span></h2>
             </div>
             
