@@ -31,7 +31,7 @@ export function Navigation() {
   ];
 
   if (user?.email === "henryadeeya@gmail.com") {
-    navItems.push({ label: 'Admin', href: '/admin' });
+    navItems.push({ label: 'Dashboard', href: '/admin' });
   }
 
   return (
