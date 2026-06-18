@@ -21,6 +21,7 @@ const COLORS = {
   border: "#CBD5E1",
   text: "#1E293B",
   muted: "#64748B",
+  black: "#000000", // Pure black for asset list
 };
 
 const initialForm = {
@@ -89,46 +90,58 @@ export default function BNPLPage() {
     const deliveryStr = form.deliveryDate || "__________";
 
     const TH = ({ children, w }: { children: React.ReactNode, w: string }) => (
-      <th style={{ background: COLORS.blue, color: "#fff", padding: "6px 8px", fontSize: 10, fontWeight: 700, border: "1px solid #fff", width: w, textAlign: "left" }}>
+      <th style={{ background: COLORS.blue, color: "#fff", padding: "8px 10px", fontSize: "11px", fontWeight: 700, border: "1px solid #fff", width: w, textAlign: "left", WebkitPrintColorAdjust: "exact" }}>
         {children}
       </th>
     );
+    
+    // Updated TD for Asset List with Pure Black Text
     const TD = ({ children, shade }: { children: React.ReactNode, shade?: boolean }) => (
-      <td style={{ padding: "5px 8px", fontSize: 10, border: `1px solid ${COLORS.border}`, background: shade ? COLORS.gray : "#fff", verticalAlign: "top" }}>
+      <td style={{ 
+        padding: "7px 10px", 
+        fontSize: "11px", 
+        border: `1px solid ${COLORS.border}`, 
+        background: shade ? COLORS.gray : "#fff", 
+        verticalAlign: "top",
+        color: COLORS.black, // PURE BLACK for details
+        WebkitPrintColorAdjust: "exact"
+      }}>
         {children}
       </td>
     );
+
     const Row = ({ label, value, highlight }: { label: string, value: string, highlight?: boolean }) => (
       <tr>
-        <td style={{ padding: "5px 10px", fontWeight: 700, fontSize: 10, background: COLORS.lightBlue, border: `1px solid ${COLORS.border}`, width: "38%", color: COLORS.navy }}>{label}</td>
-        <td style={{ padding: "5px 10px", fontSize: 10, background: highlight ? COLORS.yellow : "#fff", border: `1px solid ${COLORS.border}`, color: COLORS.text }}>{value || <span style={{ color: "#aaa" }}>—</span>}</td>
+        <td style={{ padding: "7px 12px", fontWeight: 700, fontSize: "11px", background: COLORS.lightBlue, border: `1px solid ${COLORS.border}`, width: "38%", color: COLORS.navy, WebkitPrintColorAdjust: "exact" }}>{label}</td>
+        <td style={{ padding: "7px 12px", fontSize: "11px", background: highlight ? COLORS.yellow : "#fff", border: `1px solid ${COLORS.border}`, color: COLORS.black, WebkitPrintColorAdjust: "exact" }}>{value || <span style={{ color: "#aaa" }}>—</span>}</td>
       </tr>
     );
 
     return (
-      <div id="print-area" className="bg-muted/30 p-4 md:p-8">
-        {/* PAGE 1 */}
+      <div id="print-area" className="bg-muted/30 p-4 md:p-12 transition-all">
+        {/* PAGE 1 - AGREEMENT */}
         <div style={{
-          background: "#fff", maxWidth: 720, margin: "0 auto 24px",
-          boxShadow: "0 2px 16px rgba(0,0,0,0.13)", borderRadius: 4,
-          padding: "28px 36px", pageBreakAfter: "always",
+          background: "#fff", maxWidth: "800px", margin: "0 auto 40px",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.1)", borderRadius: "4px",
+          padding: "50px 60px", pageBreakAfter: "always",
+          fontFamily: "'Playfair Display', serif"
         }}>
-          <div style={{ background: COLORS.navy, borderRadius: 6, padding: "14px 20px", marginBottom: 4, textAlign: "center" }}>
-            <div style={{ color: "#fff", fontWeight: 900, fontSize: 20, letterSpacing: 2 }}>YEDNA LIMITED</div>
+          <div style={{ background: COLORS.navy, borderRadius: "8px", padding: "20px", marginBottom: "6px", textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
+            <div style={{ color: "#fff", fontWeight: 900, fontSize: "24px", letterSpacing: "3px" }}>YEDNA LIMITED</div>
           </div>
-          <div style={{ background: COLORS.blue, borderRadius: 4, padding: "5px 12px", textAlign: "center", marginBottom: 16, fontSize: 9, color: "#fff" }}>
+          <div style={{ background: COLORS.blue, borderRadius: "4px", padding: "8px 15px", textAlign: "center", marginBottom: "24px", fontSize: "10px", color: "#fff", WebkitPrintColorAdjust: "exact" }}>
             Revlon Professional Plaza, Biashara Street | P.O Box 49939-00100, Nairobi | Tel: 0707 795 553 | yednalimited@gmail.com | www.yednalimited.com
           </div>
-          <div style={{ background: COLORS.navy, borderRadius: 4, padding: "8px 12px", textAlign: "center", marginBottom: 18, color: "#fff", fontWeight: 800, fontSize: 13, letterSpacing: 1 }}>
+          <div style={{ background: COLORS.navy, borderRadius: "4px", padding: "12px", textAlign: "center", marginBottom: "24px", color: "#fff", fontWeight: 800, fontSize: "15px", letterSpacing: "2px", WebkitPrintColorAdjust: "exact" }}>
             BUY NOW, PAY LATER (BNPL) SALES AGREEMENT
           </div>
 
-          <p style={{ fontSize: 10, color: COLORS.text, marginBottom: 14, lineHeight: 1.6 }}>
+          <p style={{ fontSize: "12px", color: COLORS.black, marginBottom: "20px", lineHeight: "1.7" }}>
             This BNPL Sales Agreement is made and entered into on this <strong>{dateStr}</strong>, by and between <strong>Yedna Limited</strong>, a duly registered company under the laws of Kenya, with its principal office in Nairobi (hereinafter referred to as the <strong>"Seller"</strong>), AND the Buyer below (hereinafter referred to as the <strong>"Buyer"</strong>).
           </p>
 
-          <div style={{ fontWeight: 700, fontSize: 10, color: "#fff", background: COLORS.blue, padding: "5px 10px", borderRadius: 4, marginBottom: 6 }}>PARTIES</div>
-          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
+          <div style={{ fontWeight: 700, fontSize: "12px", color: "#fff", background: COLORS.blue, padding: "7px 15px", borderRadius: "4px", marginBottom: "8px", WebkitPrintColorAdjust: "exact" }}>PARTIES</div>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "24px" }}>
             <tbody>
               <Row label="Seller" value="Yedna Limited – Nairobi, Kenya" />
               <Row label="Buyer Name" value={form.buyerName} highlight />
@@ -139,8 +152,8 @@ export default function BNPLPage() {
             </tbody>
           </table>
 
-          <div style={{ fontWeight: 700, fontSize: 10, color: "#fff", background: COLORS.blue, padding: "5px 10px", borderRadius: 4, marginBottom: 6 }}>1. SALE OF GOODS &nbsp;<span style={{ fontWeight: 400, fontSize: 9 }}>(see Asset List on Page 2)</span></div>
-          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
+          <div style={{ fontWeight: 700, fontSize: "12px", color: "#fff", background: COLORS.blue, padding: "7px 15px", borderRadius: "4px", marginBottom: "8px", WebkitPrintColorAdjust: "exact" }}>1. SALE OF GOODS &nbsp;<span style={{ fontWeight: 400, fontSize: "10px" }}>(see Asset List on Page 2)</span></div>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "24px" }}>
             <tbody>
               <Row label="Total Purchase Value" value={ksh(form.totalPurchase)} />
               <Row label="Initial Payment (Due on Delivery)" value={ksh(form.initialPayment)} />
@@ -158,60 +171,61 @@ export default function BNPLPage() {
             ["3. RETENTION OF OWNERSHIP", "Ownership of the equipment shall remain with the Seller until full payment of the total purchase price, including any accrued interest, has been made. The Seller reserves the right to reclaim the goods in the event of payment default."],
             ["4. DELIVERY", `The equipment shall be delivered to the Buyer upon receipt of the initial deposit${deliveryStr !== "__________" ? " on " + deliveryStr : ""}. Risk of loss or damage shall pass to the Buyer upon delivery.`],
             ["5. GOVERNING LAW & DISPUTE RESOLUTION", "This Agreement shall be governed by and construed in accordance with the laws of the Republic of Kenya. Any disputes arising under or in connection with this Agreement shall be resolved amicably through mutual negotiation, failing which the dispute shall be referred to arbitration in accordance with the Arbitration Act of Kenya."],
-            ["6. ENTIRE AGREEMENT", "This document represents the entire agreement between the parties relating to the sale of the specified goods and supersedes all prior communications and understandings."],
           ].map(([title, text]) => (
-            <div key={title} style={{ marginBottom: 10 }}>
-              <div style={{ fontWeight: 700, fontSize: 10, color: "#fff", background: COLORS.blue, padding: "4px 10px", borderRadius: 4, marginBottom: 4 }}>{title}</div>
-              <p style={{ fontSize: 9.5, color: COLORS.text, margin: 0, padding: "6px 10px", background: COLORS.gray, borderRadius: 4, lineHeight: 1.6 }}>{text}</p>
+            <div key={title} style={{ marginBottom: "15px" }}>
+              <div style={{ fontWeight: 700, fontSize: "12px", color: "#fff", background: COLORS.blue, padding: "6px 15px", borderRadius: "4px", marginBottom: "6px", WebkitPrintColorAdjust: "exact" }}>{title}</div>
+              <p style={{ fontSize: "11px", color: COLORS.black, margin: 0, padding: "10px 15px", background: COLORS.gray, borderRadius: "4px", lineHeight: "1.7", WebkitPrintColorAdjust: "exact" }}>{text}</p>
             </div>
           ))}
 
-          <div style={{ fontWeight: 700, fontSize: 10, color: "#fff", background: COLORS.navy, padding: "5px 10px", borderRadius: 4, margin: "14px 0 8px" }}>7. SIGNATURES</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ fontWeight: 700, fontSize: "12px", color: "#fff", background: COLORS.navy, padding: "7px 15px", borderRadius: "4px", margin: "20px 0 10px", WebkitPrintColorAdjust: "exact" }}>6. SIGNATURES</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             {[
               { title: "Signed for YEDNA LIMITED", name: "Henry Adeeya", pos: "Director", phone: "0707 795 553" },
               { title: `Signed for ${form.buyerOrg || "BUYER"}`, name: form.buyerName, pos: "", phone: form.buyerPhone },
             ].map((s, i) => (
-              <div key={i} style={{ border: `1.5px solid ${COLORS.border}`, borderRadius: 6, padding: "10px 12px", background: COLORS.gray }}>
-                <div style={{ fontWeight: 700, fontSize: 9, color: COLORS.navy, marginBottom: 6 }}>{s.title}</div>
+              <div key={i} style={{ border: `1.5px solid ${COLORS.border}`, borderRadius: "8px", padding: "15px", background: COLORS.gray, WebkitPrintColorAdjust: "exact" }}>
+                <div style={{ fontWeight: 700, fontSize: "11px", color: COLORS.navy, marginBottom: "8px" }}>{s.title}</div>
                 {[["Name", s.name], ["Position", s.pos || "____________________"], ["Phone", s.phone]].map(([l, v]) => (
-                  <div key={l} style={{ display: "flex", gap: 6, marginBottom: 4, fontSize: 9 }}>
-                    <span style={{ fontWeight: 700, minWidth: 60, color: COLORS.muted }}>{l}:</span>
-                    <span style={{ color: v ? COLORS.text : "#aaa" }}>{v || "____________________"}</span>
+                  <div key={l} style={{ display: "flex", gap: "8px", marginBottom: "6px", fontSize: "10px" }}>
+                    <span style={{ fontWeight: 700, minWidth: "70px", color: COLORS.muted }}>{l}:</span>
+                    <span style={{ color: v ? COLORS.black : "#aaa" }}>{v || "____________________"}</span>
                   </div>
                 ))}
-                <div style={{ fontSize: 9, marginTop: 8 }}>
+                <div style={{ fontSize: "10px", marginTop: "12px" }}>
                   <span style={{ fontWeight: 700, color: COLORS.muted }}>Signature: </span>
-                  <span style={{ display: "inline-block", width: 120, borderBottom: `1px solid #999`, marginLeft: 4 }} />
+                  <span style={{ display: "inline-block", width: "140px", borderBottom: `1.5px solid ${COLORS.black}`, marginLeft: "5px" }} />
                 </div>
-                <div style={{ fontSize: 9, marginTop: 6 }}>
+                <div style={{ fontSize: "10px", marginTop: "10px" }}>
                   <span style={{ fontWeight: 700, color: COLORS.muted }}>Date: </span>
-                  <span style={{ display: "inline-block", width: 100, borderBottom: `1px solid #999`, marginLeft: 4 }} />
+                  <span style={{ display: "inline-block", width: "120px", borderBottom: `1.5px solid ${COLORS.black}`, marginLeft: "5px" }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* PAGE 2 */}
+        {/* PAGE 2 - ASSET LIST */}
         <div style={{
-          background: "#fff", maxWidth: 720, margin: "0 auto",
-          boxShadow: "0 2px 16px rgba(0,0,0,0.13)", borderRadius: 4,
-          padding: "28px 36px",
+          background: "#fff", maxWidth: "800px", margin: "0 auto",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.1)", borderRadius: "4px",
+          padding: "50px 60px",
+          fontFamily: "'Playfair Display', serif"
         }}>
-          <div style={{ background: COLORS.navy, borderRadius: 6, padding: "14px 20px", marginBottom: 4, textAlign: "center" }}>
-            <div style={{ color: "#fff", fontWeight: 900, fontSize: 20, letterSpacing: 2 }}>YEDNA LIMITED</div>
+          <div style={{ background: COLORS.navy, borderRadius: "8px", padding: "20px", marginBottom: "6px", textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
+            <div style={{ color: "#fff", fontWeight: 900, fontSize: "24px", letterSpacing: "3px" }}>YEDNA LIMITED</div>
           </div>
-          <div style={{ background: COLORS.blue, borderRadius: 4, padding: "5px 12px", textAlign: "center", marginBottom: 14, fontSize: 9, color: "#fff" }}>
+          <div style={{ background: COLORS.blue, borderRadius: "4px", padding: "8px 15px", textAlign: "center", marginBottom: "20px", fontSize: "10px", color: "#fff", WebkitPrintColorAdjust: "exact" }}>
             Revlon Professional Plaza, Biashara Street | P.O Box 49939-00100, Nairobi | Tel: 0707 795 553 | yednalimited@gmail.com
           </div>
 
-          <div style={{ fontWeight: 800, fontSize: 13, color: COLORS.navy, textAlign: "center", marginBottom: 4 }}>ASSET ORDER LIST</div>
-          <div style={{ fontSize: 9, color: COLORS.muted, textAlign: "center", marginBottom: 14 }}>
-            Buyer: <strong>{form.buyerName || "____________________"}</strong> &nbsp;|&nbsp; Organization: <strong>{form.buyerOrg || "____________________"}</strong> &nbsp;|&nbsp; Agreement Date: <strong>{dateStr}</strong>
+          <div style={{ fontWeight: 800, fontSize: "16px", color: COLORS.navy, textAlign: "center", marginBottom: "8px" }}>ASSET ORDER LIST</div>
+          <div style={{ fontSize: "11px", color: COLORS.muted, textAlign: "center", marginBottom: "20px" }}>
+            Buyer: <strong style={{color: COLORS.black}}>{form.buyerName || "____________________"}</strong> &nbsp;|&nbsp; Organization: <strong style={{color: COLORS.black}}>{form.buyerOrg || "____________________"}</strong> &nbsp;|&nbsp; Agreement Date: <strong style={{color: COLORS.black}}>{dateStr}</strong>
           </div>
 
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
+          {/* ASSET TABLE - Using Standard Table for Word compatibility */}
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
             <thead>
               <tr>
                 <TH w="6%">#Ref</TH>
@@ -233,7 +247,8 @@ export default function BNPLPage() {
                   <TD shade={i % 2 === 0}>{p.serial}</TD>
                 </tr>
               ))}
-              {Array.from({ length: Math.max(0, 12 - form.products.length) }).map((_, i) => (
+              {/* Fill remaining space to keep layout consistent */}
+              {Array.from({ length: Math.max(0, 15 - form.products.length) }).map((_, i) => (
                 <tr key={"empty" + i}>
                   {[0,1,2,3,4,5].map(c => <TD key={c} shade={(form.products.length + i) % 2 === 0}>&nbsp;</TD>)}
                 </tr>
@@ -241,20 +256,20 @@ export default function BNPLPage() {
             </tbody>
           </table>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginTop: 18 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "15px", marginTop: "30px" }}>
             {[
               ["Total Purchase Value", ksh(form.totalPurchase)],
               ["Initial Payment", ksh(form.initialPayment)],
               ["Outstanding Balance", ksh(outstanding)],
             ].map(([l, v]) => (
-              <div key={l} style={{ border: `1.5px solid ${COLORS.border}`, borderRadius: 6, padding: "10px 14px", background: COLORS.lightBlue, textAlign: "center" }}>
-                <div style={{ fontSize: 9, color: COLORS.muted, fontWeight: 700, textTransform: "uppercase", marginBottom: 4 }}>{l}</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.navy }}>{v || "—"}</div>
+              <div key={l} style={{ border: `2px solid ${COLORS.border}`, borderRadius: "8px", padding: "15px", background: COLORS.lightBlue, textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
+                <div style={{ fontSize: "10px", color: COLORS.muted, fontWeight: 700, textTransform: "uppercase", marginBottom: "6px" }}>{l}</div>
+                <div style={{ fontSize: "16px", fontWeight: 800, color: COLORS.navy }}>{v || "—"}</div>
               </div>
             ))}
           </div>
 
-          <div style={{ marginTop: 18, padding: "8px 14px", background: COLORS.gray, borderRadius: 6, fontSize: 9, color: COLORS.muted, textAlign: "center" }}>
+          <div style={{ marginTop: "30px", padding: "12px 15px", background: COLORS.gray, borderRadius: "8px", fontSize: "10px", color: COLORS.muted, textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
             This Asset List forms an integral part of the BNPL Sales Agreement dated <strong>{dateStr}</strong>. &nbsp;|&nbsp; www.yednalimited.com
           </div>
         </div>
@@ -262,18 +277,29 @@ export default function BNPLPage() {
         <style jsx global>{`
           @media print {
             nav, footer, .no-print {
-              display: none !none;
+              display: none !important;
             }
             body {
-              background: white;
+              background: white !important;
+              padding: 0 !important;
+              margin: 0 !important;
             }
             #print-area {
               background: white !important;
               padding: 0 !important;
+              width: 100% !important;
             }
             #print-area > div {
               box-shadow: none !important;
               margin: 0 auto !important;
+              border: none !important;
+              width: 100% !important;
+              max-width: none !important;
+              padding: 1cm !important;
+            }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
           }
         `}</style>
@@ -294,7 +320,7 @@ export default function BNPLPage() {
             </h1>
           </div>
           
-          <div className="flex bg-card p-1 border border-primary/10 rounded-none">
+          <div className="flex bg-card p-1 border border-primary/10 rounded-none shadow-xl">
             <button 
               onClick={() => setTab("form")}
               className={cn(
@@ -311,7 +337,7 @@ export default function BNPLPage() {
                 tab === "preview" ? "bg-primary text-background" : "text-foreground/40 hover:text-primary"
               )}
             >
-              <Eye size={16} /> Preview Agreement
+              <Eye size={16} /> Document Preview
             </button>
           </div>
         </div>
@@ -468,7 +494,7 @@ export default function BNPLPage() {
                 onClick={() => setTab("preview")}
                 className="rounded-none h-16 px-16 bg-primary text-background font-black text-xs uppercase tracking-[0.3em] hover:bg-primary/90 transition-all hover:-translate-y-1 shadow-2xl"
               >
-                Generate Agreement <FileText className="ml-3" size={18} />
+                Finalize Documents <FileText className="ml-3" size={18} />
               </Button>
             </div>
           </div>
@@ -476,10 +502,10 @@ export default function BNPLPage() {
           <div className="animate-in zoom-in-95 duration-500">
             <div className="max-w-7xl mx-auto px-6 md:px-20 mb-12 flex justify-center gap-4 no-print">
               <Button onClick={() => setTab("form")} variant="outline" className="rounded-none border-primary text-primary uppercase tracking-widest font-bold h-12">
-                <Edit3 className="mr-2" size={16} /> Return to Edit
+                <Edit3 className="mr-2" size={16} /> Edit Details
               </Button>
               <Button onClick={() => window.print()} className="rounded-none bg-primary text-background uppercase tracking-widest font-bold h-12 px-8 shadow-xl">
-                <Printer className="mr-2" size={16} /> Print / Save PDF
+                <Printer className="mr-2" size={16} /> Print / Save as PDF
               </Button>
             </div>
             <Preview />
