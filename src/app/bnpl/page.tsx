@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { FileDown, Edit3, Eye, Plus, Trash2, FileText, Building2, User, Wallet, Calendar as CalendarIcon, Calculator } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { FileDown, Edit3, Eye, Plus, Trash2, FileText, Building2, User, Wallet, Calendar as CalendarIcon, Calculator, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, differenceInDays, addDays } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
@@ -60,7 +61,6 @@ export default function BNPLPage() {
   const [tab, setTab] = useState<"form" | "preview">("form");
   const [form, setForm] = useState(initialForm);
 
-  // Financial Calculations - 100% Accuracy based on daily-pro-rata of monthly interest
   const finance = useMemo(() => {
     const principal = Math.max(0, num(form.totalPurchase) - num(form.initialPayment));
     const daysDiff = Math.max(0, differenceInDays(form.paymentDeadline, form.agreementDate));
@@ -105,13 +105,12 @@ export default function BNPLPage() {
 
   const handleDownloadPDF = () => {
     toast({
-      title: "Generating Editable PDF",
-      description: "Opening PDF engine. Please select 'Save as PDF' in the destination field to download your document.",
+      title: "Preparing Download",
+      description: "Important: In the Print menu, select 'Save as PDF' as your Destination to download the document.",
     });
-    // Slight delay to allow toast to show and styles to settle
     setTimeout(() => {
       window.print();
-    }, 800);
+    }, 600);
   };
 
   const Preview = () => {
@@ -143,8 +142,8 @@ export default function BNPLPage() {
         border: `1px solid ${COLORS.border}`, 
         background: shade ? COLORS.gray : "#ffffff", 
         verticalAlign: "top",
-        color: "#000000", // Force black for Word editability
-        fontWeight: isBlack ? "bold" : "normal",
+        color: isBlack ? "#000000" : "#1e293b",
+        fontWeight: isBlack ? "700" : "normal",
         printColorAdjust: "exact",
         WebkitPrintColorAdjust: "exact"
       }}>
@@ -603,13 +602,17 @@ export default function BNPLPage() {
           </div>
         ) : (
           <div className="animate-in zoom-in-95 duration-500">
-            <div className="max-w-7xl mx-auto px-6 md:px-20 mb-12 flex flex-col items-center justify-center gap-4 no-print bg-card p-6 border border-primary/10">
-              <p className="text-xs text-foreground/50 uppercase tracking-widest text-center max-w-lg">
-                Your editable document is ready. Click below to open the generator, then select <strong>"Save as PDF"</strong> to download a Word-compatible file.
-              </p>
+            <div className="max-w-7xl mx-auto px-6 md:px-20 mb-12 flex flex-col items-center justify-center gap-6 no-print bg-card p-10 border border-primary/20 shadow-2xl">
+              <div className="text-center space-y-2">
+                <Info className="text-primary mx-auto mb-2" size={32} />
+                <h2 className="font-headline text-2xl">Your Agreement is Ready</h2>
+                <p className="text-xs text-foreground/50 uppercase tracking-widest max-w-lg mx-auto">
+                  To download, click the button below. When the print window appears, change the <strong>Destination</strong> to <strong>"Save as PDF"</strong>.
+                </p>
+              </div>
               <div className="flex gap-4">
-                <Button onClick={() => setTab("form")} variant="outline" className="rounded-none border-primary text-primary uppercase tracking-widest font-bold h-12">
-                  <Edit3 className="mr-2" size={16} /> Return to Data
+                <Button onClick={() => setTab("form")} variant="outline" className="rounded-none border-primary text-primary uppercase tracking-widest font-bold h-12 px-8">
+                  <Edit3 className="mr-2" size={16} /> Edit Data
                 </Button>
                 <Button 
                   onClick={handleDownloadPDF} 
