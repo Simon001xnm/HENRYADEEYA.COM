@@ -427,6 +427,20 @@ export default function BNPLPage() {
                     </Popover>
                   </div>
                   <div className="space-y-2">
+                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Delivery Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none border-primary/10 h-12", !form.deliveryDate && "text-muted-foreground")}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {form.deliveryDate ? format(form.deliveryDate, "PPP") : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 rounded-none" align="start">
+                        <Calendar mode="single" selected={form.deliveryDate} onSelect={(date) => date && setField("deliveryDate", date)} initialFocus />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="space-y-2">
                     <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Payment Deadline (End)</Label>
                     <Popover>
                       <PopoverTrigger asChild>
