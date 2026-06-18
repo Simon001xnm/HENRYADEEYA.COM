@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { Printer, Edit3, Eye, Plus, Trash2, FileText, Building2, User, Wallet, Calendar as CalendarIcon } from 'lucide-react';
+import { Printer, Edit3, Eye, Plus, Trash2, FileText, Building2, User, Wallet, Calendar as CalendarIcon, Calculator } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format, addDays, parse } from 'date-fns';
+import { format, parse, differenceInDays } from 'date-fns';
 
 const COLORS = {
   navy: "#1F3864",
@@ -25,6 +25,8 @@ const COLORS = {
   black: "#000000", 
 };
 
+const INTEREST_RATE_MONTHLY = 0.125; // 12.5%
+
 const initialForm = {
   day: format(new Date(), 'dd'),
   month: format(new Date(), 'MMMM'),
@@ -36,8 +38,8 @@ const initialForm = {
   buyerEmail: "",
   totalPurchase: "",
   initialPayment: "",
-  paymentDeadline: "",
-  deliveryDate: "",
+  paymentDeadline: "", // This will be the selected end date
+  deliveryDate: format(new Date(), 'dd MMMM yyyy'),
   products: [{ ref: "001", brand: "", description: "", specs: "", colour: "", serial: "" }],
 };
 
@@ -56,30 +58,40 @@ export default function BNPLPage() {
   const [tab, setTab] = useState<"form" | "preview">("form");
   const [form, setForm] = useState(initialForm);
 
-  const outstanding = Math.max(0, num(form.totalPurchase) - num(form.initialPayment));
+  // Financial Calculations
+  const finance = useMemo(() => {
+    const principal = Math.max(0, num(form.totalPurchase) - num(form.initialPayment));
+    
+    let interestAmount = 0;
+    let daysDiff = 0;
+    let months = 0;
 
-  // Auto-calculate deadline and delivery date
-  useEffect(() => {
-    if (form.day && form.month && form.year) {
-      try {
-        const dateStr = `${form.day} ${form.month} ${form.year}`;
-        const startDate = parse(dateStr, 'dd MMMM yyyy', new Date());
-        
-        if (!isNaN(startDate.getTime())) {
-          const deadlineDate = addDays(startDate, 30);
-          const deliveryDate = startDate; // Delivery usually on agreement/deposit date
-          
-          setForm(f => ({
-            ...f,
-            paymentDeadline: format(deadlineDate, 'dd MMMM yyyy'),
-            deliveryDate: format(deliveryDate, 'dd MMMM yyyy')
-          }));
+    try {
+      const startDateStr = `${form.day} ${form.month} ${form.year}`;
+      const startDate = parse(startDateStr, 'dd MMMM yyyy', new Date());
+      const endDate = parse(form.paymentDeadline, 'dd MMMM yyyy', new Date());
+
+      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        daysDiff = differenceInDays(endDate, startDate);
+        if (daysDiff > 0) {
+          months = daysDiff / 30; // 30 days as a standard month
+          interestAmount = principal * INTEREST_RATE_MONTHLY * months;
         }
-      } catch (e) {
-        // Silently fail if date is invalid while typing
       }
+    } catch (e) {
+      // Dates not yet valid
     }
-  }, [form.day, form.month, form.year]);
+
+    const totalDue = principal + interestAmount;
+
+    return {
+      principal,
+      interestAmount,
+      totalDue,
+      months: months.toFixed(2),
+      days: daysDiff
+    };
+  }, [form.totalPurchase, form.initialPayment, form.day, form.month, form.year, form.paymentDeadline]);
 
   const setField = (k: string, v: string) => {
     setForm(f => ({ ...f, [k]: v }));
@@ -107,7 +119,7 @@ export default function BNPLPage() {
     }));
   };
 
-  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const monthsList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
   const Preview = () => {
     const dateStr = form.day && form.month ? `${form.day} ${form.month} ${form.year}` : "___ day of ________ 2026";
@@ -130,14 +142,15 @@ export default function BNPLPage() {
       </th>
     );
     
-    const TD = ({ children, shade }: { children: React.ReactNode, shade?: boolean }) => (
+    const TD = ({ children, shade, isBlack }: { children: React.ReactNode, shade?: boolean, isBlack?: boolean }) => (
       <td style={{ 
         padding: "8px 10px", 
         fontSize: "11px", 
         border: `1px solid ${COLORS.border}`, 
         background: shade ? COLORS.gray : "#ffffff", 
         verticalAlign: "top",
-        color: COLORS.black,
+        color: isBlack ? COLORS.black : COLORS.text,
+        fontWeight: isBlack ? "bold" : "normal",
         WebkitPrintColorAdjust: "exact"
       }}>
         {children}
@@ -212,17 +225,17 @@ export default function BNPLPage() {
             <tbody>
               <Row label="Total Purchase Value" value={ksh(form.totalPurchase)} />
               <Row label="Initial Payment (Due on Delivery)" value={ksh(form.initialPayment)} />
-              <Row label="Outstanding Balance" value={outstanding ? ksh(outstanding) : ""} />
-              <Row label="Interest Rate" value="12.5% per month on reducing balance" />
-              <Row label="Payment Period" value="30 calendar days from date of delivery" />
+              <Row label="Principal Balance" value={ksh(finance.principal)} />
+              <Row label="Accrued Interest (12.5%/mo)" value={ksh(finance.interestAmount)} />
+              <Row label="Total Outstanding Due" value={ksh(finance.totalDue)} highlight />
+              <Row label="Interest Calculation Period" value={`${finance.months} months (${finance.days} days)`} />
               <Row label="Payment Deadline" value={deadlineStr} highlight />
-              <Row label="Delivery Date" value={deliveryStr} highlight />
-              <Row label="Penalty on Overdue" value="15% compounded monthly on outstanding amount" />
+              <Row label="Delivery Date" value={deliveryStr} />
             </tbody>
           </table>
 
           {[
-            ["2. PAYMENT TERMS", `The Buyer agrees to pay the outstanding balance of ${ksh(outstanding) || "KES ________"} within THIRTY (30) calendar days from the date of delivery (ending ${deadlineStr}). This amount includes 12.5% interest charges monthly on a reducing balance. Failure to pay within this period will attract a PENALTY charge of 15% on the overdue amount, compounded monthly, until fully settled.`],
+            ["2. PAYMENT TERMS", `The Buyer agrees to pay the total outstanding balance of ${ksh(finance.totalDue) || "KES ________"} by the deadline of ${deadlineStr}. This balance includes a monthly interest charge of 12.5% calculated on the reducing balance over a period of ${finance.months} months. Failure to pay within this period will attract a PENALTY charge of 15% on the overdue amount, compounded monthly, until fully settled.`],
             ["3. RETENTION OF OWNERSHIP", "Ownership of the equipment shall remain with the Seller until full payment of the total purchase price, including any accrued interest, has been made. The Seller reserves the right to reclaim the goods in the event of payment default."],
             ["4. DELIVERY", `The equipment shall be delivered to the Buyer upon receipt of the initial deposit${deliveryStr !== "__________" ? " on " + deliveryStr : ""}. Risk of loss or damage shall pass to the Buyer upon delivery.`],
             ["5. GOVERNING LAW", "This Agreement shall be governed by and construed in accordance with the laws of the Republic of Kenya. Any disputes shall be referred to arbitration in accordance with the Arbitration Act of Kenya."],
@@ -294,12 +307,12 @@ export default function BNPLPage() {
             <tbody>
               {form.products.map((p, i) => (
                 <tr key={i}>
-                  <TD shade={i % 2 === 0}>{p.ref}</TD>
-                  <TD shade={i % 2 === 0}>{p.brand}</TD>
-                  <TD shade={i % 2 === 0}>{p.description}</TD>
-                  <TD shade={i % 2 === 0}>{p.specs}</TD>
-                  <TD shade={i % 2 === 0}>{p.colour}</TD>
-                  <TD shade={i % 2 === 0}>{p.serial}</TD>
+                  <TD shade={i % 2 === 0} isBlack>{p.ref}</TD>
+                  <TD shade={i % 2 === 0} isBlack>{p.brand}</TD>
+                  <TD shade={i % 2 === 0} isBlack>{p.description}</TD>
+                  <TD shade={i % 2 === 0} isBlack>{p.specs}</TD>
+                  <TD shade={i % 2 === 0} isBlack>{p.colour}</TD>
+                  <TD shade={i % 2 === 0} isBlack>{p.serial}</TD>
                 </tr>
               ))}
               {Array.from({ length: Math.max(0, 18 - form.products.length) }).map((_, i) => (
@@ -310,17 +323,15 @@ export default function BNPLPage() {
             </tbody>
           </table>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginTop: "40px" }}>
-            {[
-              ["Total Purchase Value", ksh(form.totalPurchase)],
-              ["Initial Payment", ksh(form.initialPayment)],
-              ["Outstanding Balance", ksh(outstanding)],
-            ].map(([l, v]) => (
-              <div key={l} style={{ border: `2px solid ${COLORS.border}`, borderRadius: "8px", padding: "15px", background: COLORS.lightBlue, textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
-                <div style={{ fontSize: "10px", color: COLORS.muted, fontWeight: "bold", textTransform: "uppercase", marginBottom: "8px" }}>{l}</div>
-                <div style={{ fontSize: "16px", fontWeight: "900", color: COLORS.navy }}>{v || "—"}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginTop: "40px" }}>
+             <div style={{ border: `2px solid ${COLORS.border}`, borderRadius: "8px", padding: "15px", background: COLORS.lightBlue, textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
+                <div style={{ fontSize: "10px", color: COLORS.muted, fontWeight: "bold", textTransform: "uppercase", marginBottom: "8px" }}>Principal Balance</div>
+                <div style={{ fontSize: "16px", fontWeight: "900", color: COLORS.navy }}>{ksh(finance.principal)}</div>
               </div>
-            ))}
+              <div style={{ border: `2px solid ${COLORS.border}`, borderRadius: "8px", padding: "15px", background: COLORS.yellow, textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
+                <div style={{ fontSize: "10px", color: COLORS.muted, fontWeight: "bold", textTransform: "uppercase", marginBottom: "8px" }}>Total Outstanding Due</div>
+                <div style={{ fontSize: "16px", fontWeight: "900", color: COLORS.navy }}>{ksh(finance.totalDue)}</div>
+              </div>
           </div>
 
           <div style={{ marginTop: "40px", padding: "15px", background: COLORS.gray, borderRadius: "8px", fontSize: "11px", color: COLORS.muted, textAlign: "center", WebkitPrintColorAdjust: "exact" }}>
@@ -417,17 +428,13 @@ export default function BNPLPage() {
                       onChange={e => setField("month", e.target.value)} 
                       className="w-full bg-background border border-primary/5 px-3 h-12 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                     >
-                      {months.map(m => <option key={m} value={m}>{m}</option>)}
+                      {monthsList.map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Year</Label>
                     <Input placeholder="2026" value={form.year} onChange={e => setField("year", e.target.value)} className="rounded-none border-primary/5 h-12" />
                   </div>
-                </div>
-                <div className="p-4 bg-primary/5 border border-primary/10 flex justify-between items-center">
-                  <span className="text-xs uppercase tracking-widest text-primary font-bold">Calculated Deadline (30 Days)</span>
-                  <span className="font-bold text-foreground">{form.paymentDeadline || "—"}</span>
                 </div>
               </CardContent>
             </Card>
@@ -464,12 +471,12 @@ export default function BNPLPage() {
               </CardContent>
             </Card>
 
-            {/* Price Section */}
+            {/* Finance Breakdown Section */}
             <Card className="rounded-none border-primary/10 bg-card shadow-2xl">
               <CardContent className="p-8 space-y-8">
                 <div className="flex items-center gap-3 border-b border-primary/10 pb-4">
-                  <Wallet className="text-primary" size={20} />
-                  <h3 className="font-headline text-xl">Finance Breakdown</h3>
+                  <Calculator className="text-primary" size={20} />
+                  <h3 className="font-headline text-xl">Interest & Balance Calculation</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -480,9 +487,33 @@ export default function BNPLPage() {
                     <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Initial Deposit (KES)</Label>
                     <Input placeholder="e.g. 50000" value={form.initialPayment} onChange={e => setField("initialPayment", e.target.value)} className="rounded-none border-primary/5 h-12" />
                   </div>
-                  <div className="md:col-span-2 p-6 bg-primary/5 border border-primary/10 flex flex-col items-center">
-                    <p className="text-[0.6rem] uppercase tracking-widest text-primary font-bold mb-1">Outstanding Balance Remaining</p>
-                    <p className="font-headline text-3xl font-black">{ksh(outstanding)}</p>
+                  <div className="space-y-2">
+                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Payment Deadline (End Date)</Label>
+                    <Input placeholder="e.g. 20 July 2026" value={form.paymentDeadline} onChange={e => setField("paymentDeadline", e.target.value)} className="rounded-none border-primary/5 h-12" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Delivery Date</Label>
+                    <Input placeholder="e.g. 18 June 2026" value={form.deliveryDate} onChange={e => setField("deliveryDate", e.target.value)} className="rounded-none border-primary/5 h-12" />
+                  </div>
+
+                  <div className="md:col-span-2 p-6 bg-primary/5 border border-primary/10 grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
+                    <div>
+                      <p className="text-[0.5rem] uppercase tracking-widest text-primary font-bold mb-1">Principal</p>
+                      <p className="font-bold text-lg">{ksh(finance.principal)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[0.5rem] uppercase tracking-widest text-primary font-bold mb-1">Calculated Interest</p>
+                      <p className="font-bold text-lg">{ksh(finance.interestAmount)}</p>
+                    </div>
+                    <div className="col-span-2 md:col-span-1 border-t md:border-t-0 md:border-l border-primary/10 pt-4 md:pt-0">
+                      <p className="text-[0.6rem] uppercase tracking-[0.2em] text-primary font-black mb-1">Total Outstanding</p>
+                      <p className="font-headline text-2xl font-black text-foreground">{ksh(finance.totalDue)}</p>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 text-center">
+                    <p className="text-[0.6rem] text-foreground/40 italic">
+                      Based on a period of {finance.months} months ({finance.days} days) at 12.5% per month.
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -556,11 +587,6 @@ export default function BNPLPage() {
               <Button onClick={() => window.print()} className="rounded-none bg-primary text-background uppercase tracking-widest font-bold h-12 px-8 shadow-xl">
                 <Printer className="mr-2" size={16} /> Print / Save as PDF
               </Button>
-            </div>
-            <div className="no-print text-center mb-8 px-6">
-              <p className="text-xs text-foreground/40 uppercase tracking-widest">
-                Tip: When the print dialog opens, select "Save as PDF" to generate a Word-compatible document.
-              </p>
             </div>
             <Preview />
           </div>
