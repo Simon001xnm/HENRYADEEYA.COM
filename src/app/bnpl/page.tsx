@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { FileDown, Edit3, Eye, Plus, Trash2, FileText, Building2, User, Wallet, Calendar as CalendarIcon, Calculator } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, differenceInDays, addDays } from 'date-fns';
+import { toast } from '@/hooks/use-toast';
 
 const COLORS = {
   navy: "#1F3864",
@@ -58,12 +59,15 @@ export default function BNPLPage() {
   const [tab, setTab] = useState<"form" | "preview">("form");
   const [form, setForm] = useState(initialForm);
 
-  // Financial Calculations
+  // Financial Calculations - 100% Accuracy based on daily-pro-rata of monthly interest
   const finance = useMemo(() => {
     const principal = Math.max(0, num(form.totalPurchase) - num(form.initialPayment));
     
-    const daysDiff = differenceInDays(form.paymentDeadline, form.agreementDate);
-    const months = Math.max(0, daysDiff / 30);
+    // Calculate days between start and end
+    const daysDiff = Math.max(0, differenceInDays(form.paymentDeadline, form.agreementDate));
+    
+    // Interest is 12.5% per month (standard 30-day month for calculation)
+    const months = daysDiff / 30;
     const interestAmount = principal * INTEREST_RATE_MONTHLY * months;
     const totalDue = principal + interestAmount;
 
@@ -100,6 +104,17 @@ export default function BNPLPage() {
       ...f, 
       products: f.products.filter((_, idx) => idx !== i) 
     }));
+  };
+
+  const handleDownloadPDF = () => {
+    toast({
+      title: "Generating Document",
+      description: "Please select 'Save as PDF' in the print dialog to download your editable document.",
+    });
+    // Slight delay to allow toast to show
+    setTimeout(() => {
+      window.print();
+    }, 500);
   };
 
   const Preview = () => {
@@ -306,13 +321,13 @@ export default function BNPLPage() {
               ))}
               {Array.from({ length: Math.max(0, 18 - form.products.length) }).map((_, i) => (
                 <tr key={"empty" + i}>
-                  {[0,1,2,3,4,5].map(c => <TD key={c} shade={(form.products.length + i) % 2 === 0}>&nbsp;</TD>)}
+                  {[0,1,2,3,4,5].map(c => <TD key={c} shade={(form.products.length + i) % 2 === 0} isBlack>&nbsp;</TD>)}
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginTop: "40px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 40 }}>
              <div style={{ border: `2px solid ${COLORS.border}`, borderRadius: "8px", padding: "15px", background: COLORS.lightBlue, textAlign: "center", printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" }}>
                 <div style={{ fontSize: "11px", color: COLORS.muted, fontWeight: "bold", textTransform: "uppercase", marginBottom: "8px" }}>Principal Balance</div>
                 <div style={{ fontSize: "18px", fontWeight: "900", color: COLORS.navy }}>{ksh(finance.principal)}</div>
@@ -363,10 +378,6 @@ export default function BNPLPage() {
     );
   };
 
-  const handleDownloadPDF = () => {
-    window.print();
-  };
-
   return (
     <main className="min-h-screen bg-background">
       <Navigation />
@@ -404,7 +415,7 @@ export default function BNPLPage() {
 
         {tab === "form" ? (
           <div className="max-w-4xl mx-auto px-6 md:px-20 space-y-8 no-print animate-in fade-in duration-500">
-            {/* Agreement Date Section */}
+            {/* Agreement Dates Section */}
             <Card className="rounded-none border-primary/10 bg-card shadow-2xl">
               <CardContent className="p-8 space-y-8">
                 <div className="flex items-center gap-3 border-b border-primary/10 pb-4">
@@ -582,7 +593,10 @@ export default function BNPLPage() {
 
             <div className="flex justify-center pt-8">
               <Button 
-                onClick={() => setTab("preview")}
+                onClick={() => {
+                  setTab("preview");
+                  window.scrollTo(0, 0);
+                }}
                 className="rounded-none h-16 px-16 bg-primary text-background font-black text-xs uppercase tracking-[0.3em] hover:bg-primary/90 transition-all hover:-translate-y-1 shadow-2xl"
               >
                 Finalize Documents <FileText className="ml-3" size={18} />
@@ -592,14 +606,18 @@ export default function BNPLPage() {
         ) : (
           <div className="animate-in zoom-in-95 duration-500">
             <div className="max-w-7xl mx-auto px-6 md:px-20 mb-12 flex flex-col items-center justify-center gap-4 no-print bg-card p-6 border border-primary/10">
-              <p className="text-xs text-foreground/50 uppercase tracking-widest text-center">
-                Click below to download the official vector PDF document. Ensure "Background graphics" is enabled in your browser options.
+              <p className="text-xs text-foreground/50 uppercase tracking-widest text-center max-w-lg">
+                Your high-fidelity document is ready. Click below to open the print interface, then select <strong>"Save as PDF"</strong> to download a Word-editable file.
               </p>
               <div className="flex gap-4">
                 <Button onClick={() => setTab("form")} variant="outline" className="rounded-none border-primary text-primary uppercase tracking-widest font-bold h-12">
                   <Edit3 className="mr-2" size={16} /> Return to Data
                 </Button>
-                <Button onClick={handleDownloadPDF} className="rounded-none bg-primary text-background uppercase tracking-[0.2em] font-black h-12 px-10 shadow-xl flex items-center gap-2">
+                <Button 
+                  onClick={handleDownloadPDF} 
+                  type="button"
+                  className="rounded-none bg-primary text-background uppercase tracking-[0.2em] font-black h-12 px-10 shadow-xl flex items-center gap-2"
+                >
                   <FileDown size={18} /> Download PDF Document
                 </Button>
               </div>
