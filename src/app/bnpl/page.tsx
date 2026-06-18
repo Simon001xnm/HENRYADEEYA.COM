@@ -1,15 +1,18 @@
+
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Printer, Edit3, Eye, Plus, Trash2, FileText, Building2, User, Wallet, Calendar as CalendarIcon, Calculator } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format, parse, differenceInDays } from 'date-fns';
+import { format, differenceInDays, addDays } from 'date-fns';
 
 const COLORS = {
   navy: "#1F3864",
@@ -28,9 +31,9 @@ const COLORS = {
 const INTEREST_RATE_MONTHLY = 0.125; // 12.5%
 
 const initialForm = {
-  day: format(new Date(), 'dd'),
-  month: format(new Date(), 'MMMM'),
-  year: format(new Date(), 'yyyy'),
+  agreementDate: new Date(),
+  paymentDeadline: addDays(new Date(), 30),
+  deliveryDate: new Date(),
   buyerName: "",
   buyerOrg: "",
   buyerAddress: "",
@@ -38,8 +41,6 @@ const initialForm = {
   buyerEmail: "",
   totalPurchase: "",
   initialPayment: "",
-  paymentDeadline: "", // This will be the selected end date
-  deliveryDate: format(new Date(), 'dd MMMM yyyy'),
   products: [{ ref: "001", brand: "", description: "", specs: "", colour: "", serial: "" }],
 };
 
@@ -62,26 +63,9 @@ export default function BNPLPage() {
   const finance = useMemo(() => {
     const principal = Math.max(0, num(form.totalPurchase) - num(form.initialPayment));
     
-    let interestAmount = 0;
-    let daysDiff = 0;
-    let months = 0;
-
-    try {
-      const startDateStr = `${form.day} ${form.month} ${form.year}`;
-      const startDate = parse(startDateStr, 'dd MMMM yyyy', new Date());
-      const endDate = parse(form.paymentDeadline, 'dd MMMM yyyy', new Date());
-
-      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-        daysDiff = differenceInDays(endDate, startDate);
-        if (daysDiff > 0) {
-          months = daysDiff / 30; // 30 days as a standard month
-          interestAmount = principal * INTEREST_RATE_MONTHLY * months;
-        }
-      }
-    } catch (e) {
-      // Dates not yet valid
-    }
-
+    const daysDiff = differenceInDays(form.paymentDeadline, form.agreementDate);
+    const months = Math.max(0, daysDiff / 30);
+    const interestAmount = principal * INTEREST_RATE_MONTHLY * months;
     const totalDue = principal + interestAmount;
 
     return {
@@ -91,9 +75,9 @@ export default function BNPLPage() {
       months: months.toFixed(2),
       days: daysDiff
     };
-  }, [form.totalPurchase, form.initialPayment, form.day, form.month, form.year, form.paymentDeadline]);
+  }, [form.totalPurchase, form.initialPayment, form.agreementDate, form.paymentDeadline]);
 
-  const setField = (k: string, v: string) => {
+  const setField = (k: string, v: any) => {
     setForm(f => ({ ...f, [k]: v }));
   };
 
@@ -119,12 +103,10 @@ export default function BNPLPage() {
     }));
   };
 
-  const monthsList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
   const Preview = () => {
-    const dateStr = form.day && form.month ? `${form.day} ${form.month} ${form.year}` : "___ day of ________ 2026";
-    const deadlineStr = form.paymentDeadline || "__________";
-    const deliveryStr = form.deliveryDate || "__________";
+    const dateStr = format(form.agreementDate, 'do MMMM yyyy');
+    const deadlineStr = format(form.paymentDeadline, 'do MMMM yyyy');
+    const deliveryStr = format(form.deliveryDate, 'do MMMM yyyy');
 
     const TH = ({ children, w }: { children: React.ReactNode, w: string }) => (
       <th style={{ 
@@ -235,9 +217,9 @@ export default function BNPLPage() {
           </table>
 
           {[
-            ["2. PAYMENT TERMS", `The Buyer agrees to pay the total outstanding balance of ${ksh(finance.totalDue) || "KES ________"} by the deadline of ${deadlineStr}. This balance includes a monthly interest charge of 12.5% calculated on the reducing balance over a period of ${finance.months} months. Failure to pay within this period will attract a PENALTY charge of 15% on the overdue amount, compounded monthly, until fully settled.`],
+            ["2. PAYMENT TERMS", `The Buyer agrees to pay the total outstanding balance of ${ksh(finance.totalDue) || "KES ________"} by the deadline of ${deadlineStr}. This balance includes a monthly interest charge of 12.5% calculated on the reducing balance over the period specified. Failure to pay within this period will attract a PENALTY charge of 15% on the overdue amount, compounded monthly, until fully settled.`],
             ["3. RETENTION OF OWNERSHIP", "Ownership of the equipment shall remain with the Seller until full payment of the total purchase price, including any accrued interest, has been made. The Seller reserves the right to reclaim the goods in the event of payment default."],
-            ["4. DELIVERY", `The equipment shall be delivered to the Buyer upon receipt of the initial deposit${deliveryStr !== "__________" ? " on " + deliveryStr : ""}. Risk of loss or damage shall pass to the Buyer upon delivery.`],
+            ["4. DELIVERY", `The equipment shall be delivered to the Buyer upon receipt of the initial deposit on ${deliveryStr}. Risk of loss or damage shall pass to the Buyer upon delivery.`],
             ["5. GOVERNING LAW", "This Agreement shall be governed by and construed in accordance with the laws of the Republic of Kenya. Any disputes shall be referred to arbitration in accordance with the Arbitration Act of Kenya."],
           ].map(([title, text]) => (
             <div key={title} style={{ marginBottom: "20px" }}>
@@ -413,27 +395,51 @@ export default function BNPLPage() {
             <Card className="rounded-none border-primary/10 bg-card shadow-2xl">
               <CardContent className="p-8 space-y-8">
                 <div className="flex items-center gap-3 border-b border-primary/10 pb-4">
-                  <CalendarIcon className="text-primary" size={20} />
-                  <h3 className="font-headline text-xl">Agreement Date (Start)</h3>
+                  <Calculator className="text-primary" size={20} />
+                  <h3 className="font-headline text-xl">Financial Period</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Day</Label>
-                    <Input placeholder="e.g. 18" value={form.day} onChange={e => setField("day", e.target.value)} className="rounded-none border-primary/5 h-12" />
+                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Agreement Start Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none border-primary/10 h-12", !form.agreementDate && "text-muted-foreground")}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {form.agreementDate ? format(form.agreementDate, "PPP") : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 rounded-none" align="start">
+                        <Calendar mode="single" selected={form.agreementDate} onSelect={(date) => date && setField("agreementDate", date)} initialFocus />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Month</Label>
-                    <select 
-                      value={form.month} 
-                      onChange={e => setField("month", e.target.value)} 
-                      className="w-full bg-background border border-primary/5 px-3 h-12 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                    >
-                      {monthsList.map(m => <option key={m} value={m}>{m}</option>)}
-                    </select>
+                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Payment Deadline (End)</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none border-primary/10 h-12", !form.paymentDeadline && "text-muted-foreground")}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {form.paymentDeadline ? format(form.paymentDeadline, "PPP") : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 rounded-none" align="start">
+                        <Calendar mode="single" selected={form.paymentDeadline} onSelect={(date) => date && setField("paymentDeadline", date)} initialFocus />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Year</Label>
-                    <Input placeholder="2026" value={form.year} onChange={e => setField("year", e.target.value)} className="rounded-none border-primary/5 h-12" />
+                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Delivery Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-none border-primary/10 h-12", !form.deliveryDate && "text-muted-foreground")}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {form.deliveryDate ? format(form.deliveryDate, "PPP") : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 rounded-none" align="start">
+                        <Calendar mode="single" selected={form.deliveryDate} onSelect={(date) => date && setField("deliveryDate", date)} initialFocus />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
               </CardContent>
@@ -461,7 +467,7 @@ export default function BNPLPage() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Phone</Label>
-                    <Input placeholder="e.g. 0712 345 678" value={form.buyerPhone} onChange={e => setField("buyerPhone", e.target.value)} className="rounded-none border-primary/5 h-12" />
+                    <Input placeholder="07XX XXX XXX" value={form.buyerPhone} onChange={e => setField("buyerPhone", e.target.value)} className="rounded-none border-primary/5 h-12" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Email</Label>
@@ -475,8 +481,8 @@ export default function BNPLPage() {
             <Card className="rounded-none border-primary/10 bg-card shadow-2xl">
               <CardContent className="p-8 space-y-8">
                 <div className="flex items-center gap-3 border-b border-primary/10 pb-4">
-                  <Calculator className="text-primary" size={20} />
-                  <h3 className="font-headline text-xl">Interest & Balance Calculation</h3>
+                  <Wallet className="text-primary" size={20} />
+                  <h3 className="font-headline text-xl">Interest & Balance Breakdown</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -487,32 +493,24 @@ export default function BNPLPage() {
                     <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Initial Deposit (KES)</Label>
                     <Input placeholder="e.g. 50000" value={form.initialPayment} onChange={e => setField("initialPayment", e.target.value)} className="rounded-none border-primary/5 h-12" />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Payment Deadline (End Date)</Label>
-                    <Input placeholder="e.g. 20 July 2026" value={form.paymentDeadline} onChange={e => setField("paymentDeadline", e.target.value)} className="rounded-none border-primary/5 h-12" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Delivery Date</Label>
-                    <Input placeholder="e.g. 18 June 2026" value={form.deliveryDate} onChange={e => setField("deliveryDate", e.target.value)} className="rounded-none border-primary/5 h-12" />
-                  </div>
 
                   <div className="md:col-span-2 p-6 bg-primary/5 border border-primary/10 grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
                     <div>
-                      <p className="text-[0.5rem] uppercase tracking-widest text-primary font-bold mb-1">Principal</p>
+                      <p className="text-[0.5rem] uppercase tracking-widest text-primary font-bold mb-1">Principal (Balance)</p>
                       <p className="font-bold text-lg">{ksh(finance.principal)}</p>
                     </div>
                     <div>
-                      <p className="text-[0.5rem] uppercase tracking-widest text-primary font-bold mb-1">Calculated Interest</p>
-                      <p className="font-bold text-lg">{ksh(finance.interestAmount)}</p>
+                      <p className="text-[0.5rem] uppercase tracking-widest text-primary font-bold mb-1">Interest Accrued</p>
+                      <p className="font-bold text-lg text-accent">{ksh(finance.interestAmount)}</p>
                     </div>
                     <div className="col-span-2 md:col-span-1 border-t md:border-t-0 md:border-l border-primary/10 pt-4 md:pt-0">
-                      <p className="text-[0.6rem] uppercase tracking-[0.2em] text-primary font-black mb-1">Total Outstanding</p>
+                      <p className="text-[0.6rem] uppercase tracking-[0.2em] text-primary font-black mb-1">Total Due to Yedna</p>
                       <p className="font-headline text-2xl font-black text-foreground">{ksh(finance.totalDue)}</p>
                     </div>
                   </div>
                   <div className="md:col-span-2 text-center">
                     <p className="text-[0.6rem] text-foreground/40 italic">
-                      Based on a period of {finance.months} months ({finance.days} days) at 12.5% per month.
+                      Interest calculated at 12.5% per month over {finance.days} days ({finance.months} months).
                     </p>
                   </div>
                 </div>
@@ -546,11 +544,11 @@ export default function BNPLPage() {
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {[
                           ["ref", "#Ref", "e.g. 001"],
-                          ["brand", "Brand", "e.g. HP"],
-                          ["description", "Description", "e.g. EliteBook"],
-                          ["specs", "Specs", "e.g. Core i7, 16GB"],
-                          ["colour", "Colour", "e.g. Silver"],
-                          ["serial", "Serial No.", "e.g. SN1234"],
+                          ["brand", "Brand", "e.g. Dell"],
+                          ["description", "Description", "e.g. Latitude"],
+                          ["specs", "Specs", "e.g. Core i5, 8GB"],
+                          ["colour", "Colour", "e.g. Grey"],
+                          ["serial", "Serial No.", "e.g. SN54321"],
                         ].map(([k, l, ph]) => (
                           <div key={k} className="space-y-1">
                             <Label className="text-[0.5rem] uppercase tracking-widest text-foreground/40 font-bold">{l}</Label>
@@ -574,7 +572,7 @@ export default function BNPLPage() {
                 onClick={() => setTab("preview")}
                 className="rounded-none h-16 px-16 bg-primary text-background font-black text-xs uppercase tracking-[0.3em] hover:bg-primary/90 transition-all hover:-translate-y-1 shadow-2xl"
               >
-                Generate Final Documents <FileText className="ml-3" size={18} />
+                Finalize Documents <FileText className="ml-3" size={18} />
               </Button>
             </div>
           </div>
@@ -585,7 +583,7 @@ export default function BNPLPage() {
                 <Edit3 className="mr-2" size={16} /> Return to Data
               </Button>
               <Button onClick={() => window.print()} className="rounded-none bg-primary text-background uppercase tracking-widest font-bold h-12 px-8 shadow-xl">
-                <Printer className="mr-2" size={16} /> Print / Save as PDF
+                <Printer className="mr-2" size={16} /> Print Agreement (Save PDF)
               </Button>
             </div>
             <Preview />
