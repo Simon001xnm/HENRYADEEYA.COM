@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -62,11 +63,7 @@ export default function BNPLPage() {
   // Financial Calculations - 100% Accuracy based on daily-pro-rata of monthly interest
   const finance = useMemo(() => {
     const principal = Math.max(0, num(form.totalPurchase) - num(form.initialPayment));
-    
-    // Calculate days between start and end
     const daysDiff = Math.max(0, differenceInDays(form.paymentDeadline, form.agreementDate));
-    
-    // Interest is 12.5% per month (standard 30-day month for calculation)
     const months = daysDiff / 30;
     const interestAmount = principal * INTEREST_RATE_MONTHLY * months;
     const totalDue = principal + interestAmount;
@@ -108,13 +105,13 @@ export default function BNPLPage() {
 
   const handleDownloadPDF = () => {
     toast({
-      title: "Generating Document",
-      description: "Please select 'Save as PDF' in the print dialog to download your editable document.",
+      title: "Generating Editable PDF",
+      description: "Opening PDF engine. Please select 'Save as PDF' in the destination field to download your document.",
     });
-    // Slight delay to allow toast to show
+    // Slight delay to allow toast to show and styles to settle
     setTimeout(() => {
       window.print();
-    }, 500);
+    }, 800);
   };
 
   const Preview = () => {
@@ -146,7 +143,7 @@ export default function BNPLPage() {
         border: `1px solid ${COLORS.border}`, 
         background: shade ? COLORS.gray : "#ffffff", 
         verticalAlign: "top",
-        color: isBlack ? COLORS.black : COLORS.text,
+        color: "#000000", // Force black for Word editability
         fontWeight: isBlack ? "bold" : "normal",
         printColorAdjust: "exact",
         WebkitPrintColorAdjust: "exact"
@@ -175,7 +172,7 @@ export default function BNPLPage() {
           fontSize: "12px", 
           background: highlight ? COLORS.yellow : "#ffffff", 
           border: `1px solid ${COLORS.border}`, 
-          color: COLORS.black, 
+          color: "#000000", 
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact" 
         }}>
@@ -192,7 +189,7 @@ export default function BNPLPage() {
           boxShadow: "0 4px 24px rgba(0,0,0,0.1)", borderRadius: "4px",
           padding: "60px 80px", pageBreakAfter: "always",
           fontFamily: "'Times New Roman', Times, serif",
-          color: COLORS.black,
+          color: "#000000",
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact"
         }}>
@@ -259,16 +256,16 @@ export default function BNPLPage() {
                 {[["Name", s.name], ["Position", s.pos || "____________________"], ["Phone", s.phone]].map(([l, v]) => (
                   <div key={l} style={{ display: "flex", gap: "10px", marginBottom: "8px", fontSize: "12px" }}>
                     <span style={{ fontWeight: "bold", minWidth: "80px", color: COLORS.muted }}>{l}:</span>
-                    <span style={{ color: v ? COLORS.black : "#aaaaaa" }}>{v || "____________________"}</span>
+                    <span style={{ color: v ? "#000000" : "#aaaaaa" }}>{v || "____________________"}</span>
                   </div>
                 ))}
                 <div style={{ fontSize: "12px", marginTop: "18px" }}>
                   <span style={{ fontWeight: "bold", color: COLORS.muted }}>Signature: </span>
-                  <span style={{ display: "inline-block", width: "120px", borderBottom: `1.5px solid ${COLORS.black}`, marginLeft: "5px" }} />
+                  <span style={{ display: "inline-block", width: "120px", borderBottom: `1.5px solid #000000`, marginLeft: "5px" }} />
                 </div>
                 <div style={{ fontSize: "12px", marginTop: "12px" }}>
                   <span style={{ fontWeight: "bold", color: COLORS.muted }}>Date: </span>
-                  <span style={{ display: "inline-block", width: "120px", borderBottom: `1.5px solid ${COLORS.black}`, marginLeft: "5px" }} />
+                  <span style={{ display: "inline-block", width: "120px", borderBottom: `1.5px solid #000000`, marginLeft: "5px" }} />
                 </div>
               </div>
             ))}
@@ -281,7 +278,7 @@ export default function BNPLPage() {
           boxShadow: "0 4px 24px rgba(0,0,0,0.1)", borderRadius: "4px",
           padding: "60px 80px",
           fontFamily: "'Times New Roman', Times, serif",
-          color: COLORS.black,
+          color: "#000000",
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact"
         }}>
@@ -294,7 +291,7 @@ export default function BNPLPage() {
 
           <div style={{ fontWeight: "bold", fontSize: "20px", color: COLORS.navy, textAlign: "center", marginBottom: "10px" }}>ASSET ORDER LIST</div>
           <div style={{ fontSize: "13px", color: COLORS.muted, textAlign: "center", marginBottom: "25px" }}>
-            Buyer: <strong style={{color: COLORS.black}}>{form.buyerName || "____________________"}</strong> &nbsp;|&nbsp; Organization: <strong style={{color: COLORS.black}}>{form.buyerOrg || "____________________"}</strong> &nbsp;|&nbsp; Agreement Date: <strong style={{color: COLORS.black}}>{dateStr}</strong>
+            Buyer: <strong style={{color: "#000000"}}>{form.buyerName || "____________________"}</strong> &nbsp;|&nbsp; Organization: <strong style={{color: "#000000"}}>{form.buyerOrg || "____________________"}</strong> &nbsp;|&nbsp; Agreement Date: <strong style={{color: "#000000"}}>{dateStr}</strong>
           </div>
 
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
@@ -371,6 +368,7 @@ export default function BNPLPage() {
             * {
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
+              color-adjust: exact !important;
             }
           }
         `}</style>
@@ -607,7 +605,7 @@ export default function BNPLPage() {
           <div className="animate-in zoom-in-95 duration-500">
             <div className="max-w-7xl mx-auto px-6 md:px-20 mb-12 flex flex-col items-center justify-center gap-4 no-print bg-card p-6 border border-primary/10">
               <p className="text-xs text-foreground/50 uppercase tracking-widest text-center max-w-lg">
-                Your high-fidelity document is ready. Click below to open the print interface, then select <strong>"Save as PDF"</strong> to download a Word-editable file.
+                Your editable document is ready. Click below to open the generator, then select <strong>"Save as PDF"</strong> to download a Word-compatible file.
               </p>
               <div className="flex gap-4">
                 <Button onClick={() => setTab("form")} variant="outline" className="rounded-none border-primary text-primary uppercase tracking-widest font-bold h-12">
