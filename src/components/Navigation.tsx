@@ -26,7 +26,6 @@ export function Navigation() {
     { label: 'About', href: '/#about' },
     { label: 'Messages', href: '/messages' },
     { label: 'Blog', href: '/blogs' },
-    { label: 'BNPL Tool', href: '/bnpl' },
     { label: 'Impact', href: '/#impact' },
     { label: 'Contact', href: '/#contact' },
   ];
