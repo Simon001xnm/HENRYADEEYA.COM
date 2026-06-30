@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useUser, useFirestore, useAuth, useCollection } from '@/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle, AlertCircle, Video, FileText, Settings, Heart, MessageSquare, Trash2 } from 'lucide-react';
+import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle, AlertCircle, Video, FileText, Settings, Heart, MessageSquare, Trash2, KeyRound } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -26,6 +26,7 @@ export default function AdminPage() {
   const db = useFirestore();
   const [loading, setLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // Login Form State
@@ -58,6 +59,34 @@ export default function AdminPage() {
       setLoginError(msg);
     } finally {
       setLoginLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email || !email.includes('@')) {
+      toast({ 
+        variant: "destructive", 
+        title: "Email Required", 
+        description: "Please enter your admin email first to reset your password." 
+      });
+      return;
+    }
+    
+    setResetLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({ 
+        title: "Reset Link Sent", 
+        description: `A password recovery email has been dispatched to ${email}.` 
+      });
+    } catch (error: any) {
+      toast({ 
+        variant: "destructive", 
+        title: "Reset Failed", 
+        description: "Could not send recovery email. Please try again." 
+      });
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -142,7 +171,17 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Secret Key</label>
+                    <div className="flex justify-between items-center">
+                      <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Secret Key</label>
+                      <button 
+                        type="button" 
+                        onClick={handleForgotPassword}
+                        disabled={resetLoading}
+                        className="text-[0.55rem] uppercase tracking-widest text-primary/60 hover:text-primary transition-colors font-bold disabled:opacity-50"
+                      >
+                        {resetLoading ? "Sending..." : "Recover Key?"}
+                      </button>
+                    </div>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" size={16} />
                       <Input type="password" required placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 rounded-none bg-background border-primary/5 focus:border-primary h-12" />
