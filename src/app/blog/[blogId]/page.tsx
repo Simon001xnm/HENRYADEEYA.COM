@@ -13,8 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Loader2, Calendar, User, Share2, Heart, MessageSquare, Send, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-// REPLACE THIS WITH YOUR EMAIL
-const ADMIN_EMAIL = "your-email@example.com"; 
+const ADMIN_EMAIL = "simonwanjiru224@gmial.com"; 
 
 export default function BlogDetailPage() {
   const params = useParams();
@@ -23,14 +22,12 @@ export default function BlogDetailPage() {
   const { user } = useUser();
   const router = useRouter();
 
-  // Blog Data
   const blogRef = useMemo(() => {
     if (!db || !blogId) return null;
     return doc(db, 'blogs', blogId);
   }, [db, blogId]);
   const { data: blog, loading } = useDoc(blogRef);
 
-  // Comments Data
   const commentsQuery = useMemo(() => {
     if (!db || !blogId) return null;
     return query(collection(db, 'blogs', blogId, 'comments'), orderBy('createdAt', 'desc'));
@@ -139,7 +136,6 @@ export default function BlogDetailPage() {
             <p className="text-foreground/70 leading-[1.8] text-xl whitespace-pre-wrap font-body">{blog.content}</p>
           </div>
 
-          {/* Comments Section */}
           <section className="pt-20 border-t border-primary/10 space-y-12">
             <div className="space-y-4">
               <h3 className="font-headline text-3xl flex items-center gap-2"><MessageSquare className="text-primary" /> Conversation</h3>

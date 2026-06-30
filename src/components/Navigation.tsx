@@ -9,8 +9,7 @@ import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/firebase';
 
-// REPLACE THIS WITH YOUR EMAIL
-const ADMIN_EMAIL = "your-email@example.com"; 
+const ADMIN_EMAIL = "simonwanjiru224@gmial.com"; 
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,7 +47,6 @@ export function Navigation() {
           Henry <span className="text-primary italic transition-all group-hover:tracking-normal">Adeeya</span>
         </Link>
 
-        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-10">
           {navItems.map((item) => (
             <Link 
@@ -69,13 +67,11 @@ export function Navigation() {
           </Button>
         </div>
 
-        {/* Mobile Toggle */}
         <button className="md:hidden text-foreground p-2 hover:bg-white/5 transition-colors rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 premium-blur border-b border-primary/10 p-10 flex flex-col gap-8 animate-in slide-in-from-top-4 duration-500 shadow-2xl">
           {navItems.map((item) => (

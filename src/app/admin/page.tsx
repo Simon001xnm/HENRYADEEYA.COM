@@ -18,8 +18,7 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-// REPLACE THIS WITH YOUR EMAIL
-const ADMIN_EMAIL = "your-email@example.com"; 
+const ADMIN_EMAIL = "simonwanjiru224@gmial.com"; 
 
 export default function AdminPage() {
   const { user, loading: userLoading } = useUser();
@@ -31,15 +30,12 @@ export default function AdminPage() {
   const [resetSent, setResetSent] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
-  // Login Form State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Content States
   const [videoData, setVideoData] = useState({ title: '', description: '', videoUrl: '', thumbnailUrl: '' });
   const [blogData, setBlogData] = useState({ title: '', content: '', imageUrl: '', videoUrl: '' });
 
-  // Management State
   const blogsQuery = useMemo(() => {
     if (!db) return null;
     return query(collection(db, 'blogs'), orderBy('createdAt', 'desc'));
