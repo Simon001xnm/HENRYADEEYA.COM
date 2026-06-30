@@ -36,12 +36,12 @@ export function Navigation() {
 
   return (
     <nav className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 md:px-12",
-      isScrolled ? "premium-blur border-b border-primary/10 py-3" : "bg-transparent"
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-6 md:px-12",
+      isScrolled ? "premium-blur border-b border-primary/10 py-4 shadow-xl" : "bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="font-headline text-xl font-bold tracking-tight text-foreground group">
-          Henry <span className="text-primary italic group-hover:pl-1 transition-all">Adeeya</span>
+        <Link href="/" className="font-headline text-2xl font-bold tracking-tighter text-foreground group">
+          Henry <span className="text-primary italic transition-all group-hover:tracking-normal">Adeeya</span>
         </Link>
 
         {/* Desktop Links */}
@@ -51,38 +51,43 @@ export function Navigation() {
               key={item.label} 
               href={item.href} 
               className={cn(
-                "text-[0.7rem] uppercase tracking-[0.2em] transition-colors",
-                pathname === item.href ? "text-primary" : "text-foreground/70 hover:text-primary"
+                "relative text-[0.65rem] uppercase tracking-[0.25em] transition-all duration-300 font-bold",
+                pathname === item.href 
+                  ? "text-primary after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-px after:bg-primary" 
+                  : "text-foreground/60 hover:text-primary hover:tracking-[0.3em]"
               )}
             >
               {item.label}
             </Link>
           ))}
-          <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-background text-[0.7rem] tracking-widest uppercase rounded-none px-6" asChild>
+          <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary hover:text-background text-[0.65rem] tracking-[0.2em] uppercase rounded-none px-8 h-10 transition-all duration-500" asChild>
             <Link href="/#contact">Get in Touch</Link>
           </Button>
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-foreground" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X /> : <Menu />}
+        <button className="md:hidden text-foreground p-2 hover:bg-white/5 transition-colors rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 premium-blur border-b border-primary/10 p-8 flex flex-col gap-6 animate-in slide-in-from-top duration-300">
+        <div className="md:hidden absolute top-full left-0 right-0 premium-blur border-b border-primary/10 p-10 flex flex-col gap-8 animate-in slide-in-from-top-4 duration-500 shadow-2xl">
           {navItems.map((item) => (
             <Link 
               key={item.label} 
               href={item.href} 
-              className="text-sm uppercase tracking-widest text-foreground"
+              className={cn(
+                "text-lg font-headline tracking-widest transition-all",
+                pathname === item.href ? "text-primary pl-4 border-l-2 border-primary" : "text-foreground"
+              )}
               onClick={() => setIsMenuOpen(false)}
             >
               {item.label}
             </Link>
           ))}
-          <Button className="w-full rounded-none" onClick={() => setIsMenuOpen(false)} asChild>
+          <Button className="w-full rounded-none h-14 uppercase tracking-[0.3em] text-xs font-bold" onClick={() => setIsMenuOpen(false)} asChild>
             <Link href="/#contact">Contact Henry</Link>
           </Button>
         </div>
