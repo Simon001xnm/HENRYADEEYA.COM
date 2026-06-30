@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useUser, useFirestore, useAuth, useCollection } from '@/firebase';
-import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle, AlertCircle, Video, FileText, Settings, Heart, MessageSquare, Trash2, KeyRound } from 'lucide-react';
+import { Loader2, Plus, LogOut, ShieldCheck, Mail, Lock, CheckCircle, AlertCircle, Video, FileText, Settings, Heart, MessageSquare, Trash2, KeyRound, UserPlus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -29,6 +29,7 @@ export default function AdminPage() {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [isSignUp, setIsSignUp] = useState(false);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,15 +43,23 @@ export default function AdminPage() {
   }, [db]);
   const { data: blogs, loading: blogsLoading } = useCollection(blogsQuery);
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
     setLoginError(null);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast({ title: "Authorized", description: "Welcome to the Ministry Dashboard." });
+      if (isSignUp) {
+        if (email !== ADMIN_EMAIL) {
+          throw new Error("Only the primary administrator email can be registered here.");
+        }
+        await createUserWithEmailAndPassword(auth, email, password);
+        toast({ title: "Account Created", description: "Your admin account is ready." });
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+        toast({ title: "Authorized", description: "Welcome to the Ministry Dashboard." });
+      }
     } catch (error: any) {
-      let msg = "Authentication failed. Please check your credentials.";
+      let msg = error.message;
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
         msg = "Invalid account or password.";
       }
@@ -77,13 +86,13 @@ export default function AdminPage() {
       setResetSent(true);
       toast({ 
         title: "Reset Link Sent", 
-        description: `A password recovery email has been dispatched to ${email}.` 
+        description: `A password recovery email has been sent to ${email}.` 
       });
     } catch (error: any) {
       toast({ 
         variant: "destructive", 
         title: "Reset Failed", 
-        description: "Could not send recovery email. Please ensure your admin email is correct." 
+        description: "Could not send recovery email. Please check the email address." 
       });
     } finally {
       setResetLoading(false);
@@ -171,7 +180,7 @@ export default function AdminPage() {
                   </Alert>
                 )}
 
-                <form onSubmit={handleEmailLogin} className="space-y-4">
+                <form onSubmit={handleAuth} className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Admin Email</label>
                     <div className="relative">
@@ -182,14 +191,16 @@ export default function AdminPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Secret Key</label>
-                      <button 
-                        type="button" 
-                        onClick={handleForgotPassword}
-                        disabled={resetLoading}
-                        className="text-[0.55rem] uppercase tracking-[0.2em] text-primary hover:text-white transition-all font-black disabled:opacity-50 flex items-center gap-1"
-                      >
-                        {resetLoading ? <Loader2 className="animate-spin w-3 h-3" /> : <><KeyRound size={12} /> Recover Key?</>}
-                      </button>
+                      {!isSignUp && (
+                        <button 
+                          type="button" 
+                          onClick={handleForgotPassword}
+                          disabled={resetLoading}
+                          className="text-[0.55rem] uppercase tracking-[0.2em] text-primary hover:text-white transition-all font-black disabled:opacity-50 flex items-center gap-1"
+                        >
+                          {resetLoading ? <Loader2 className="animate-spin w-3 h-3" /> : <><KeyRound size={12} /> Recover Key?</>}
+                        </button>
+                      )}
                     </div>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" size={16} />
@@ -197,8 +208,22 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <Button type="submit" disabled={loginLoading} className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-widest font-bold">
-                    {loginLoading ? <Loader2 className="animate-spin" /> : "Sign In to Dashboard"}
+                    {loginLoading ? <Loader2 className="animate-spin" /> : isSignUp ? "Create Admin Account" : "Sign In to Dashboard"}
                   </Button>
+                  
+                  <div className="text-center pt-4">
+                    <button 
+                      type="button"
+                      onClick={() => setIsSignUp(!isSignUp)}
+                      className="text-[0.6rem] uppercase tracking-[0.2em] text-foreground/40 hover:text-primary transition-colors flex items-center justify-center gap-2 mx-auto"
+                    >
+                      {isSignUp ? (
+                        <>Back to Sign In</>
+                      ) : (
+                        <><UserPlus size={12} /> First time login? Setup Account</>
+                      )}
+                    </button>
+                  </div>
                 </form>
               </CardContent>
             </Card>
