@@ -53,7 +53,7 @@ export default function AdminPage() {
           throw new Error("Only the primary administrator email can be registered here.");
         }
         await createUserWithEmailAndPassword(auth, email, password);
-        toast({ title: "Account Created", description: "Your admin account is ready." });
+        toast({ title: "Account Created", description: "Your admin account is ready. You are now logged in." });
       } else {
         await signInWithEmailAndPassword(auth, email, password);
         toast({ title: "Authorized", description: "Welcome to the Ministry Dashboard." });
@@ -62,6 +62,8 @@ export default function AdminPage() {
       let msg = error.message;
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
         msg = "Invalid account or password.";
+      } else if (error.code === 'auth/email-already-in-use') {
+        msg = "This account already exists. Please sign in instead.";
       }
       setLoginError(msg);
     } finally {
@@ -162,7 +164,21 @@ export default function AdminPage() {
               <h1 className="font-headline text-4xl">Admin <span className="text-primary italic">Nexus</span></h1>
               <p className="text-foreground/40 max-w-sm mx-auto">Authenticate to manage your ministry media.</p>
             </div>
-            <Card className="w-full max-w-md bg-card border-primary/10 rounded-none shadow-2xl">
+            <Card className="w-full max-w-md bg-card border-primary/10 rounded-none shadow-2xl overflow-hidden">
+              <div className="grid grid-cols-2 h-12 bg-secondary/20">
+                <button 
+                  onClick={() => setIsSignUp(false)}
+                  className={`text-[0.6rem] uppercase tracking-widest font-bold transition-all ${!isSignUp ? 'bg-primary text-background' : 'text-foreground/40'}`}
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => setIsSignUp(true)}
+                  className={`text-[0.6rem] uppercase tracking-widest font-bold transition-all ${isSignUp ? 'bg-primary text-background' : 'text-foreground/40'}`}
+                >
+                  Setup Account
+                </button>
+              </div>
               <CardContent className="pt-8 space-y-6">
                 {loginError && (
                   <Alert variant="destructive" className="rounded-none bg-destructive/10 border-destructive/20 text-destructive">
@@ -190,7 +206,7 @@ export default function AdminPage() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Secret Key</label>
+                      <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Password</label>
                       {!isSignUp && (
                         <button 
                           type="button" 
@@ -207,23 +223,16 @@ export default function AdminPage() {
                       <Input type="password" required placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 rounded-none bg-background border-primary/5 focus:border-primary h-12" />
                     </div>
                   </div>
-                  <Button type="submit" disabled={loginLoading} className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-widest font-bold">
-                    {loginLoading ? <Loader2 className="animate-spin" /> : isSignUp ? "Create Admin Account" : "Sign In to Dashboard"}
+                  <Button type="submit" disabled={loginLoading} className="w-full bg-primary text-background hover:bg-primary/90 rounded-none h-14 uppercase tracking-widest font-bold shadow-lg shadow-primary/20">
+                    {loginLoading ? <Loader2 className="animate-spin" /> : isSignUp ? "Register Admin Account" : "Access Dashboard"}
                   </Button>
                   
-                  <div className="text-center pt-4">
-                    <button 
-                      type="button"
-                      onClick={() => setIsSignUp(!isSignUp)}
-                      className="text-[0.6rem] uppercase tracking-[0.2em] text-foreground/40 hover:text-primary transition-colors flex items-center justify-center gap-2 mx-auto"
-                    >
-                      {isSignUp ? (
-                        <>Back to Sign In</>
-                      ) : (
-                        <><UserPlus size={12} /> First time login? Setup Account</>
-                      )}
+                  <p className="text-[0.55rem] text-center text-foreground/30 uppercase tracking-[0.2em] mt-4 font-medium">
+                    {isSignUp ? "Already have an account?" : "First time logging in?"} 
+                    <button type="button" onClick={() => setIsSignUp(!isSignUp)} className="text-primary ml-1 font-black">
+                      {isSignUp ? "Sign In" : "Setup Now"}
                     </button>
-                  </div>
+                  </p>
                 </form>
               </CardContent>
             </Card>
