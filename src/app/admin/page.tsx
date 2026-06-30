@@ -27,6 +27,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // Login Form State
@@ -67,14 +68,16 @@ export default function AdminPage() {
       toast({ 
         variant: "destructive", 
         title: "Email Required", 
-        description: "Please enter your admin email first to reset your password." 
+        description: "Please enter your admin email in the field above to reset your password." 
       });
       return;
     }
     
     setResetLoading(true);
+    setResetSent(false);
     try {
       await sendPasswordResetEmail(auth, email);
+      setResetSent(true);
       toast({ 
         title: "Reset Link Sent", 
         description: `A password recovery email has been dispatched to ${email}.` 
@@ -83,7 +86,7 @@ export default function AdminPage() {
       toast({ 
         variant: "destructive", 
         title: "Reset Failed", 
-        description: "Could not send recovery email. Please try again." 
+        description: "Could not send recovery email. Please ensure your admin email is correct." 
       });
     } finally {
       setResetLoading(false);
@@ -162,6 +165,15 @@ export default function AdminPage() {
                     <AlertDescription className="text-xs">{loginError}</AlertDescription>
                   </Alert>
                 )}
+                
+                {resetSent && (
+                  <Alert className="rounded-none bg-primary/10 border-primary/20 text-primary">
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertTitle>Check Email</AlertTitle>
+                    <AlertDescription className="text-xs">A recovery link was sent to {email}.</AlertDescription>
+                  </Alert>
+                )}
+
                 <form onSubmit={handleEmailLogin} className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Admin Email</label>
@@ -177,9 +189,9 @@ export default function AdminPage() {
                         type="button" 
                         onClick={handleForgotPassword}
                         disabled={resetLoading}
-                        className="text-[0.55rem] uppercase tracking-widest text-primary/60 hover:text-primary transition-colors font-bold disabled:opacity-50"
+                        className="text-[0.55rem] uppercase tracking-[0.2em] text-primary hover:text-white transition-all font-black disabled:opacity-50 flex items-center gap-1"
                       >
-                        {resetLoading ? "Sending..." : "Recover Key?"}
+                        {resetLoading ? <Loader2 className="animate-spin w-3 h-3" /> : <><KeyRound size={12} /> Recover Key?</>}
                       </button>
                     </div>
                     <div className="relative">
