@@ -13,6 +13,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Loader2, Calendar, User, Share2, Heart, MessageSquare, Send, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
+// REPLACE THIS WITH YOUR EMAIL
+const ADMIN_EMAIL = "your-email@example.com"; 
+
 export default function BlogDetailPage() {
   const params = useParams();
   const blogId = params.blogId as string;
@@ -38,7 +41,7 @@ export default function BlogDetailPage() {
   const [commentText, setCommentText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isAdmin = user?.email === "henryadeeya@gmail.com";
+  const isAdmin = user?.email === ADMIN_EMAIL;
 
   const handleLike = async () => {
     if (!user) {

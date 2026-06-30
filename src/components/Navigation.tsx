@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -7,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/firebase';
+
+// REPLACE THIS WITH YOUR EMAIL
+const ADMIN_EMAIL = "your-email@example.com"; 
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,7 +34,7 @@ export function Navigation() {
     { label: 'Contact', href: '/#contact' },
   ];
 
-  if (user?.email === "henryadeeya@gmail.com") {
+  if (user?.email === ADMIN_EMAIL) {
     navItems.push({ label: 'Dashboard', href: '/admin' });
   }
 

@@ -18,7 +18,8 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-const ADMIN_EMAIL = "henryadeeya@gmail.com"; 
+// REPLACE THIS WITH YOUR EMAIL
+const ADMIN_EMAIL = "your-email@example.com"; 
 
 export default function AdminPage() {
   const { user, loading: userLoading } = useUser();
@@ -210,6 +211,7 @@ export default function AdminPage() {
           <div className="text-center py-20 space-y-6">
             <ShieldCheck size={48} className="text-destructive mx-auto" />
             <h1 className="text-2xl text-destructive font-bold">Access Denied</h1>
+            <p className="text-sm text-foreground/40">Your account ({user.email}) is not authorized as an administrator.</p>
             <Button variant="outline" className="rounded-none" onClick={() => signOut(auth)}>Log Out</Button>
           </div>
         ) : (
