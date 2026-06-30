@@ -17,14 +17,14 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-24 px-6 md:px-20 bg-secondary/10 relative overflow-hidden">
+    <section id="contact" className="py-16 md:py-32 px-6 md:px-20 bg-secondary/10 relative overflow-hidden">
       {/* Background Initials */}
       <div className="absolute right-[-10vw] bottom-[-5vw] font-headline text-[30vw] font-black opacity-[0.02] select-none pointer-events-none">
         HA
       </div>
 
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20">
-        <div className="space-y-10">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20">
+        <div className="space-y-8 md:space-y-10">
           <div>
             <span className="text-primary text-[0.7rem] tracking-[0.25em] uppercase font-medium mb-4 block">Global Outreach</span>
             <h2 className="font-headline text-4xl md:text-6xl font-bold text-foreground">
@@ -59,7 +59,7 @@ export function ContactSection() {
           </div>
         </div>
 
-        <div className="bg-card border border-primary/10 p-12 relative z-10 shadow-2xl">
+        <div className="bg-card border border-primary/10 p-8 md:p-12 relative z-10 shadow-2xl">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label className="text-[0.6rem] uppercase tracking-widest text-primary font-bold">Your Identity</label>
