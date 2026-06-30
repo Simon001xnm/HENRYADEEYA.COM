@@ -27,9 +27,22 @@
         "videoUrl": { "type": "string", "description": "Optional video embed for the blog." },
         "authorName": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" },
-        "published": { "type": "boolean" }
+        "published": { "type": "boolean" },
+        "likesCount": { "type": "number" },
+        "likedBy": { "type": "array", "items": { "type": "string" } }
       },
       "required": ["title", "content", "imageUrl"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "A user comment on a content piece.",
+      "type": "object",
+      "properties": {
+        "userName": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userName", "text", "createdAt"]
     }
   },
   "auth": {
@@ -43,6 +56,10 @@
     "/blogs/{blogId}": {
       "schema": "#/backend/entities/BlogPost",
       "description": "Collection of blog posts and articles."
+    },
+    "/blogs/{blogId}/comments/{commentId}": {
+      "schema": "#/backend/entities/Comment",
+      "description": "Comments nested under blog posts."
     }
   }
 }
